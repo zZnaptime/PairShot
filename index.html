@@ -1,0 +1,1876 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>윳! 페어샷 메이커</title>
+
+<!-- 파비콘 -->
+<link rel="icon" href="./favicon.ico" type="image/x-icon">
+
+<style>
+@font-face{font-family:"Pretendard";font-weight:400;font-display:swap;src:local("Pretendard Regular"),local("Pretendard-Regular"),url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff2/Pretendard-Regular.woff2") format("woff2")}
+@font-face{font-family:"Pretendard";font-weight:500;font-display:swap;src:local("Pretendard Medium"),local("Pretendard-Medium"),url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff2/Pretendard-Medium.woff2") format("woff2")}
+@font-face{font-family:"Pretendard";font-weight:600;font-display:swap;src:local("Pretendard SemiBold"),local("Pretendard-SemiBold"),url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff2/Pretendard-SemiBold.woff2") format("woff2")}
+@font-face{font-family:"Pretendard";font-weight:700;font-display:swap;src:local("Pretendard Bold"),local("Pretendard-Bold"),url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff2/Pretendard-Bold.woff2") format("woff2")}
+@font-face{font-family:"Pretendard";font-weight:800;font-display:swap;src:local("Pretendard ExtraBold"),local("Pretendard-ExtraBold"),url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff2/Pretendard-ExtraBold.woff2") format("woff2")}
+
+/* ═══════════════════════════════════════════════
+   윳! 페어샷 메이커
+═══════════════════════════════════════════════ */
+:root{
+  --rx-p:#2FA4DE; --rx-p2:#1C86C2; --rx-pl:#8FDCFB; --rx-k:#0E0F12; --rx-sub:#6A7079;
+  --rx-g1:#F3F4F6; --rx-g2:#E4E6EA; --rx-g4:#8B919A;
+  --rx-ring:inset 0 0 0 1px rgba(14,15,18,.08);
+  --accent:#51aae1;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{display:flex;height:100vh;height:100dvh;font-family:"Pretendard",-apple-system,BlinkMacSystemFont,system-ui,"Noto Sans KR",sans-serif;color:var(--rx-k);overflow:hidden;background:#EEEFF2;-webkit-font-smoothing:antialiased;letter-spacing:-.03em;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+button,input,select{font-family:inherit;color:inherit;letter-spacing:inherit}
+:focus-visible{outline:2px solid var(--rx-p);outline-offset:2px}
+.hidden{display:none!important}
+
+/* ── 에디터 ── */
+.editor{
+  position:relative;width:440px;flex-shrink:0;overflow-y:auto;display:flex;flex-direction:column;gap:14px;z-index:10;
+  padding:16px 16px 60px;counter-reset:rxsec;
+  background-color:#EEEFF2;
+  background-image:
+    radial-gradient(70% 30% at 0% 0%,rgba(47,164,222,.16),transparent 70%),
+    radial-gradient(60% 26% at 100% 60%,rgba(47,164,222,.1),transparent 70%),
+    radial-gradient(circle,rgba(14,15,18,.09) 1px,transparent 1.4px);
+  background-size:auto,auto,18px 18px;
+  border-right:1px solid rgba(14,15,18,.08);
+  box-shadow:8px 0 40px -24px rgba(14,15,18,.3);
+  scrollbar-width:thin;scrollbar-color:rgba(14,15,18,.16) transparent;
+}
+.editor::-webkit-scrollbar{width:10px}
+.editor::-webkit-scrollbar-thumb{background:rgba(14,15,18,.16);border:3px solid transparent;border-radius:9px;background-clip:padding-box}
+.editor::before{
+  content:"EDITOR  ·  Pair Shot";flex-shrink:0;height:36px;padding:0 16px 0 32px;border-radius:999px;white-space:pre;
+  font:700 10.5px/36px 'Pretendard',sans-serif;letter-spacing:-.01em;color:var(--rx-sub);
+  background:radial-gradient(circle,#2FA4DE 0 3.2px,transparent 3.7px) 14px 50%/8px 8px no-repeat,rgba(255,255,255,.6);
+  -webkit-backdrop-filter:blur(18px) saturate(1.5);backdrop-filter:blur(18px) saturate(1.5);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.9),0 10px 26px -18px rgba(14,15,18,.35);
+}
+.editor::after{
+  content:"v1.0";position:absolute;top:21px;right:21px;height:26px;padding:0 11px;border-radius:999px;
+  font:800 10px/26px 'Pretendard',sans-serif;letter-spacing:-.01em;color:#fff;background:#0E0F12;pointer-events:none;
+}
+.editor-title{display:flex;align-items:center;flex-wrap:wrap;font-size:22px;font-weight:900;letter-spacing:-.06em;color:var(--rx-k);padding:0 4px;gap:6px;row-gap:0}
+.editor-title .hl{background:var(--rx-k);color:#fff;padding:0 6px 1px;border-radius:4px;margin:0 1px}
+.editor-title::after{
+  content:"";flex-basis:100%;margin-top:2px;padding-bottom:12px;
+  background:
+    repeating-linear-gradient(90deg,rgba(14,15,18,.2) 0 1px,transparent 1px 8px) 0 100%/100% 4px no-repeat,
+    repeating-linear-gradient(90deg,rgba(14,15,18,.42) 0 1px,transparent 1px 40px) 0 100%/100% 8px no-repeat;
+}
+@keyframes medSyringeFloat{0%{transform:translateY(0) rotate(-16deg)}50%{transform:translateY(-5px) rotate(-10deg)}100%{transform:translateY(2px) rotate(-18deg)}}
+.syringe-logo-svg{width:54px;height:54px;flex-shrink:0;margin:2px 0 0 -6px;overflow:visible;animation:medSyringeFloat 3.8s ease-in-out infinite alternate;filter:drop-shadow(0 4px 8px rgba(47,164,222,.4))}
+.mode-desc{margin-top:-4px;padding:0 4px}
+
+/* ── 패널 카드 (유리) ── */
+.panel-card{
+  display:flex;flex-direction:column;gap:12px;padding:16px 16px 17px;border-radius:22px;
+  background:rgba(255,255,255,.55);-webkit-backdrop-filter:blur(20px) saturate(1.5);backdrop-filter:blur(20px) saturate(1.5);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.95),inset 0 1px 0 #fff,0 22px 44px -32px rgba(14,15,18,.4);
+}
+.panel-card-title{
+  display:block;counter-increment:rxsec;font-size:13.5px;font-weight:900;letter-spacing:-.05em;color:var(--rx-k);
+  padding-bottom:10px;border-bottom:1px dashed rgba(14,15,18,.12);
+}
+.panel-card-title::first-letter{color:var(--rx-p)}
+.panel-card-title .opt{font-size:11px;font-weight:600;color:var(--rx-g4)}
+.panel-card-title::after{content:"№ " counter(rxsec,decimal-leading-zero);float:right;margin-top:2px;font:800 10px/1 'Pretendard',sans-serif;letter-spacing:0;color:#8B919A;opacity:.8}
+.panel-divider{height:0;border-top:1px dashed rgba(14,15,18,.1);margin:2px 0}
+.field-group{display:flex;flex-direction:column;gap:7px}
+.label-sub{font-size:11.5px;font-weight:800;color:var(--rx-k);letter-spacing:-.03em;display:flex;align-items:center;gap:6px}
+.label-sub .sub{font-weight:500;opacity:.7}
+.note{font-size:11.5px;font-weight:500;color:var(--rx-sub);line-height:1.6;word-break:keep-all}
+.note b{color:var(--rx-k)}
+.status{font-size:12.5px;font-weight:700;color:var(--rx-p2);min-height:1.4em;word-break:keep-all}
+.status:empty{display:none}
+
+/* ── 입력칸 ── */
+.text{width:100%;padding:9px 12px;border:0;border-radius:12px;font-size:13px;background:#fff;color:var(--rx-k);outline:none;box-shadow:inset 0 0 0 1px rgba(14,15,18,.1);letter-spacing:-.02em;transition:box-shadow .15s}
+.text:focus{box-shadow:inset 0 0 0 1.5px #2FA4DE,0 0 0 3px rgba(47,164,222,.16)}
+.ratio-free{display:flex;align-items:center;gap:8px}
+.ratio-free .text{text-align:center;font-weight:700;font-variant-numeric:tabular-nums}
+.ratio-free span{font-weight:900;color:var(--rx-sub)}
+.ratio-free .text::-webkit-inner-spin-button{opacity:.4}
+
+/* ── 세그먼트 ── */
+.seg{display:flex;gap:3px;background:rgba(255,255,255,.5);padding:4px;border-radius:999px;box-shadow:var(--rx-ring)}
+.seg button{flex:1;padding:7px 0;border:none;background:transparent;border-radius:999px;font-size:12.5px;font-weight:700;color:var(--rx-sub);cursor:pointer;transition:all .15s ease;white-space:nowrap}
+.seg button:hover{color:var(--rx-k)}
+.seg button[aria-pressed="true"]{background:var(--rx-k);color:#fff;font-weight:800;box-shadow:0 6px 12px -8px rgba(14,15,18,.7)}
+.seg.grid2{display:grid;grid-template-columns:1fr 1fr;border-radius:18px;padding:4px}
+.seg.grid5{display:grid;grid-template-columns:repeat(5,1fr);border-radius:18px;padding:4px}
+.seg.grid2 button,.seg.grid5 button{border-radius:13px;padding:8px 0}
+.seg.grid5 button{font-size:12px;font-variant-numeric:tabular-nums}
+.seg.mode-seg button{padding:10px 0}
+
+/* ── 토글 ── */
+.toggle-row{position:relative;display:flex;align-items:center;gap:9px;cursor:pointer;user-select:none;width:fit-content;padding:2px 0}
+.toggle-row input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.sw-track{width:38px;height:22px;background:var(--rx-g2);border-radius:22px;position:relative;transition:background .2s ease;flex-shrink:0;box-shadow:inset 0 1px 2px rgba(14,15,18,.12)}
+.sw-track::after{content:"";position:absolute;width:16px;height:16px;border-radius:50%;background:#fff;top:3px;left:3px;box-shadow:0 1px 3px rgba(0,0,0,.18);transition:transform .2s cubic-bezier(.34,1.56,.64,1)}
+.toggle-row input:checked + .sw-track{background:var(--rx-p)}
+.toggle-row input:checked + .sw-track::after{transform:translateX(16px)}
+.toggle-row input:focus-visible + .sw-track{outline:2px solid var(--rx-p);outline-offset:2px}
+.toggle-label{font-size:12.5px;font-weight:800;letter-spacing:-.03em}
+
+/* ── 슬라이더 (하트) ── */
+.range-row{display:flex;align-items:center;gap:12px}
+.range-row .lab{font-size:11.5px;font-weight:800;width:54px;flex-shrink:0}
+.range-row input[type=range]{flex:1;min-width:0;width:100%;height:22px;-webkit-appearance:none;appearance:none;cursor:pointer;border:0;outline:0;background:transparent;touch-action:pan-y;-webkit-tap-highlight-color:transparent}
+.range-row input[type=range]:focus-visible{outline:2px solid var(--rx-p);outline-offset:2px;border-radius:6px}
+.range-row input[type=range]::-webkit-slider-runnable-track{height:5px;border-radius:999px;background:linear-gradient(to right,#51aae1 0%,#51aae1 var(--val,0%),#e2e8f0 var(--val,0%),#e2e8f0 100%)}
+.range-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;margin-top:-8.5px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z' fill='%23ffffff' stroke='%2351aae1' stroke-width='2.2' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;border:0;filter:drop-shadow(0 2px 4px rgba(81,170,225,.3));transition:transform .15s ease}
+.range-row input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15)}
+.range-row input[type=range]::-moz-range-track{height:5px;border-radius:999px;background:#e2e8f0}
+.range-row input[type=range]::-moz-range-progress{height:5px;border-radius:999px;background:#51aae1}
+.range-row input[type=range]::-moz-range-thumb{width:22px;height:22px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z' fill='%23ffffff' stroke='%2351aae1' stroke-width='2.2' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;border:0}
+.range-row .val{font-size:12px;width:52px;text-align:right;color:var(--rx-k);opacity:.75;font-variant-numeric:tabular-nums;font-weight:700;flex-shrink:0;letter-spacing:-.02em}
+
+/* ── 색 고르기 ── */
+.color-row{display:flex;align-items:center;gap:8px}
+.color-picker-wrap{flex:1;display:flex;align-items:center;gap:8px;background:#fff;padding:4px 10px 4px 12px;border-radius:999px;height:35px;box-shadow:inset 0 0 0 1px rgba(14,15,18,.1)}
+.color-picker-wrap:focus-within{box-shadow:inset 0 0 0 1.5px #2FA4DE,0 0 0 3px rgba(47,164,222,.16)}
+.color-picker-wrap input[type=color]{-webkit-appearance:none;appearance:none;border:0;width:20px;height:20px;border-radius:50%;cursor:pointer;background:none;padding:0;flex-shrink:0;box-shadow:0 0 0 1px rgba(14,15,18,.15)}
+.color-picker-wrap input[type=color]::-webkit-color-swatch-wrapper{padding:0}
+.color-picker-wrap input[type=color]::-webkit-color-swatch{border:none;border-radius:50%}
+.color-picker-wrap input[type=color]::-moz-color-swatch{border:none;border-radius:50%}
+.hex-in{font-size:12px;font-weight:700;color:var(--rx-k);text-transform:uppercase;font-variant-numeric:tabular-nums;border:none;background:transparent;outline:none;width:76px;padding:0}
+.chip-sw{width:30px;height:30px;border-radius:50%;border:0;cursor:pointer;flex-shrink:0;box-shadow:inset 0 0 0 1px rgba(14,15,18,.15),0 2px 6px -3px rgba(14,15,18,.4);transition:transform .15s}
+.chip-sw:hover{transform:scale(1.08)}
+
+/* ── 파일 넣는 칸 ── */
+.file-dropzone{position:relative;display:flex;align-items:center;justify-content:center;gap:7px;border:1px solid rgba(14,15,18,.22);background:rgba(255,255,255,.6);border-radius:14px;padding:13px 12px;cursor:pointer;font-size:12.5px;font-weight:600;color:rgba(14,15,18,.75);transition:all .2s ease}
+.file-dropzone:hover,.file-dropzone.over{border-color:#2FA4DE;background:rgba(47,164,222,.07);color:var(--rx-p2)}
+.file-dropzone input{display:none}
+.file-dropzone svg{flex-shrink:0;stroke:currentColor}
+
+/* ── 작은 버튼 ── */
+.mini-btn{background:rgba(255,255,255,.8);border:0;border-radius:999px;box-shadow:var(--rx-ring);font-size:11px;font-weight:700;color:var(--rx-sub);padding:4px 10px;cursor:pointer;transition:all .15s ease;white-space:nowrap}
+.mini-btn:hover{background:var(--rx-p);color:#fff}
+.mini-btn.on{background:var(--rx-k);color:#fff;box-shadow:none}
+.mini-btn.danger:hover{background:#fee2e2;color:#dc2626}
+.tool-row{display:flex;gap:6px;flex-wrap:wrap}
+.tool-btn{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;gap:5px;height:34px;padding:0 8px;border:0;border-radius:999px;background:#fff;box-shadow:inset 0 0 0 1px rgba(14,15,18,.1);font-size:12px;font-weight:800;color:var(--rx-k);cursor:pointer;white-space:nowrap;transition:all .15s ease}
+.tool-btn:hover{background:var(--rx-p);color:#fff;box-shadow:none}
+.tool-btn.on{background:var(--rx-k);color:#fff;box-shadow:none}
+.tool-btn.danger:hover{background:#fee2e2;color:#dc2626}
+.tool-btn svg{flex-shrink:0}
+.sub-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+
+/* ── 이미지 칸 슬롯 ── */
+.slot{position:relative;display:flex;align-items:center;gap:11px;padding:9px 10px 9px 9px;border-radius:16px;background:#fff;box-shadow:inset 0 0 0 1px rgba(14,15,18,.1);cursor:pointer;transition:box-shadow .15s,background .15s}
+.slot:hover{box-shadow:inset 0 0 0 1.5px rgba(47,164,222,.5)}
+.slot.over{background:rgba(47,164,222,.08);box-shadow:inset 0 0 0 2px #2FA4DE}
+.slot.sel{box-shadow:inset 0 0 0 1.5px var(--rx-k)}
+.slot-thumb{position:relative;width:58px;height:58px;border-radius:11px;flex-shrink:0;overflow:hidden;background:#F3F4F6;display:grid;place-items:center}
+.slot-thumb canvas{width:100%;height:100%;display:block}
+.slot-ico{font-size:20px;font-weight:500;color:var(--rx-g4);line-height:1}
+.slot-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.slot-top{display:flex;align-items:center;gap:6px}
+.slot-num{font-size:13px;font-weight:900;letter-spacing:-.04em}
+.slot-pos{font-size:11px;font-weight:700;color:var(--rx-sub)}
+.slot-tag{margin-left:auto;height:20px;padding:0 8px;border-radius:999px;font-size:10.5px;font-weight:800;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+.slot-tag::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.slot-name{font-size:11.5px;font-weight:600;color:var(--rx-sub);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.slot-btns{display:flex;flex-direction:column;gap:4px;flex-shrink:0}
+/* 빈 칸 */
+.slot.empty{background:rgba(255,255,255,.45);box-shadow:none;outline:1.5px dashed rgba(14,15,18,.25);outline-offset:-1.5px}
+.slot.empty:hover{outline-color:#2FA4DE}
+.slot.empty.over{outline:2px solid #2FA4DE}
+.slot.empty.sel{outline:1.5px dashed var(--rx-k)}
+.slot.empty .slot-thumb{background:repeating-linear-gradient(135deg,#EEF0F3 0 6px,#F7F8FA 6px 12px);box-shadow:inset 0 0 0 1px rgba(14,15,18,.06)}
+.slot.empty .slot-tag{background:#fff;color:#8B919A;box-shadow:inset 0 0 0 1px rgba(14,15,18,.14)}
+.slot.empty .slot-tag::before{background:transparent;box-shadow:inset 0 0 0 1.5px currentColor}
+.slot:not(.empty) .slot-tag{background:rgba(47,164,222,.12);color:var(--rx-p2)}
+.slot.empty .slot-clear{display:none}
+.swap-row{display:flex;justify-content:center;margin:-4px 0}
+.swap-btn{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 14px;border:0;border-radius:999px;background:var(--rx-k);color:#fff;font-size:11.5px;font-weight:800;cursor:pointer;box-shadow:0 8px 16px -10px rgba(14,15,18,.7);transition:background .15s}
+.swap-btn:hover{background:var(--rx-p)}
+
+/* 칸 편집 잠금 */
+.cell-ctl{display:flex;flex-direction:column;gap:12px;transition:opacity .15s}
+.cell-ctl.off{opacity:.42;pointer-events:none;filter:grayscale(1)}
+.cell-empty-note{padding:9px 12px;border-radius:12px;background:rgba(255,255,255,.6);box-shadow:inset 0 0 0 1px rgba(14,15,18,.08);font-size:11.5px;font-weight:700;color:var(--rx-sub)}
+
+/* 스티커 목록 */
+.thumb-list{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.thumb-list:empty{display:none}
+.st-thumb{position:relative;aspect-ratio:1;border:0;border-radius:11px;cursor:pointer;padding:3px;
+  background-color:#F3F4F6;background-image:linear-gradient(45deg,#E4E6EA 25%,transparent 25%,transparent 75%,#E4E6EA 75%),linear-gradient(45deg,#E4E6EA 25%,transparent 25%,transparent 75%,#E4E6EA 75%);
+  background-size:10px 10px;background-position:0 0,5px 5px;box-shadow:inset 0 0 0 1px rgba(14,15,18,.08)}
+.st-thumb canvas{width:100%;height:100%;display:block;object-fit:contain}
+.st-thumb.on{box-shadow:0 0 0 2px var(--rx-p)}
+.st-thumb .lk{position:absolute;right:-3px;top:-3px;font-size:9px;background:#fff;border-radius:999px;padding:1px 3px;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.st-ctl{display:flex;flex-direction:column;gap:11px;padding:13px;border-radius:16px;background:rgba(255,255,255,.5);box-shadow:var(--rx-ring)}
+
+/* ── 저장 · 복사 버튼 ── */
+.save-btn,.copy-btn{width:100%;padding:13px 0;border:none;border-radius:999px;font-size:14px;font-weight:800;letter-spacing:-.03em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s cubic-bezier(.34,1.56,.64,1)}
+.copy-btn{background:rgba(255,255,255,.65);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);color:var(--rx-k);box-shadow:inset 0 0 0 1px rgba(255,255,255,.95),0 0 0 1px rgba(14,15,18,.08),0 12px 24px -18px rgba(14,15,18,.45)}
+.copy-btn:hover{background:#fff;color:var(--rx-p);transform:translateY(-2px)}
+.save-btn{background:var(--rx-k);color:#fff;box-shadow:0 14px 26px -14px rgba(14,15,18,.7)}
+.save-btn::before{content:"";width:7px;height:7px;border-radius:50%;background:#2FA4DE;box-shadow:0 0 8px #2FA4DE;animation:rxEdBlink 2.4s ease-in-out infinite}
+.save-btn:hover{background:var(--rx-p);transform:translateY(-2px);box-shadow:0 14px 26px -12px rgba(47,164,222,.9)}
+.save-btn:hover::before{background:#fff;box-shadow:0 0 8px #fff}
+.save-btn:active,.copy-btn:active{transform:translateY(0)}
+.save-btn:disabled,.copy-btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btn-sub{opacity:.65;font-weight:500;font-size:12px}
+@keyframes rxEdBlink{50%{opacity:.2}}
+.size-chip{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-radius:999px;background:rgba(255,255,255,.6);box-shadow:var(--rx-ring);font-size:12px;font-weight:700}
+.size-chip b{font-variant-numeric:tabular-nums;font-weight:900}
+
+/* ── 미리보기 무대 ── */
+.stage-wrap{flex:1;min-width:0;position:relative;
+  background-color:#EEEFF2;
+  background-image:
+    radial-gradient(38% 34% at 22% 14%,rgba(47,164,222,.2),transparent 70%),
+    radial-gradient(32% 30% at 86% 74%,rgba(47,164,222,.14),transparent 70%),
+    radial-gradient(30% 26% at 40% 92%,rgba(14,15,18,.05),transparent 70%),
+    radial-gradient(circle,rgba(14,15,18,.1) 1px,transparent 1.4px);
+  background-size:auto,auto,auto,22px 22px}
+.stage-wrap::before,.stage-wrap::after{content:"";position:absolute;pointer-events:none;z-index:0}
+.stage-wrap::before{inset:14px;opacity:.3;background:
+  linear-gradient(#0E0F12,#0E0F12) 0 8px/16px 1px no-repeat,linear-gradient(#0E0F12,#0E0F12) 8px 0/1px 16px no-repeat,
+  linear-gradient(#0E0F12,#0E0F12) 100% 8px/16px 1px no-repeat,linear-gradient(#0E0F12,#0E0F12) calc(100% - 8px) 0/1px 16px no-repeat,
+  linear-gradient(#0E0F12,#0E0F12) 0 calc(100% - 8px)/16px 1px no-repeat,linear-gradient(#0E0F12,#0E0F12) 8px 100%/1px 16px no-repeat,
+  linear-gradient(#0E0F12,#0E0F12) 100% calc(100% - 8px)/16px 1px no-repeat,linear-gradient(#0E0F12,#0E0F12) calc(100% - 8px) 100%/1px 16px no-repeat}
+.stage-wrap::after{content:"@zZnaptime ─ Pair Shot EDITOR";right:18px;bottom:40px;writing-mode:vertical-rl;white-space:pre;font:700 9.5px/1 'Pretendard',sans-serif;letter-spacing:-.01em;color:var(--rx-g4)}
+.stage{position:absolute;inset:0;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:72px 44px 28px;overflow:hidden}
+.stage.zoomed{overflow:auto;justify-content:flex-start;align-items:flex-start;scrollbar-color:rgba(14,15,18,.18) transparent}
+.stage.zoomed .canvas-container{margin:auto;flex-shrink:0}
+.stage.zoomed .hint{display:none}
+.stage.zoomed::-webkit-scrollbar{width:10px;height:10px}
+.stage.zoomed::-webkit-scrollbar-thumb{background:rgba(14,15,18,.18);border-radius:10px;border:2px solid transparent;background-clip:padding-box}
+.canvas-container{position:relative;flex-shrink:0;touch-action:none;user-select:none;-webkit-user-select:none}
+#cv{display:block;box-shadow:0 18px 45px rgba(51,114,161,.16),0 4px 14px rgba(15,23,42,.08),0 0 0 1px rgba(14,15,18,.06)}
+.hint{font-size:10.5px;font-weight:500;color:var(--rx-sub);text-align:center;line-height:1.6;flex-shrink:0}
+.hint b{color:var(--rx-k)}
+.drop-overlay{position:absolute;inset:0;display:none;place-items:center;background:rgba(47,164,222,.55);color:#fff;font-size:20px;font-weight:800;border:3px dashed rgba(255,255,255,.85);z-index:8;pointer-events:none}
+body.dragging .drop-overlay{display:grid}
+
+/* 보기 방식 바 */
+.view-toolbar{position:absolute;top:18px;right:22px;z-index:20;display:flex;align-items:center;gap:2px;padding:4px;border-radius:999px;user-select:none;
+  background:rgba(255,255,255,.6);-webkit-backdrop-filter:blur(18px) saturate(1.5);backdrop-filter:blur(18px) saturate(1.5);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.95),0 12px 28px -18px rgba(14,15,18,.4)}
+.view-toolbar button{border:none;background:transparent;font-size:12px;font-weight:800;color:var(--rx-sub);padding:6px 10px;border-radius:999px;cursor:pointer;white-space:nowrap;transition:all .15s ease}
+.view-toolbar button:hover{color:var(--rx-k);background:rgba(14,15,18,.05)}
+.view-toolbar button.on{background:var(--rx-k);color:#fff}
+.view-toolbar button[data-zoom]{font-size:15px;padding:4px 10px}
+.view-sep{width:1px;height:18px;background:rgba(14,15,18,.1);margin:0 3px}
+.view-pct{min-width:46px;text-align:center;font-size:11.5px;font-weight:900;color:var(--rx-k);font-variant-numeric:tabular-nums}
+.undo-bar{position:absolute;top:18px;left:22px;z-index:20;display:flex;gap:2px;padding:4px;border-radius:999px;
+  background:rgba(255,255,255,.6);-webkit-backdrop-filter:blur(18px) saturate(1.5);backdrop-filter:blur(18px) saturate(1.5);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.95),0 12px 28px -18px rgba(14,15,18,.4)}
+.undo-bar button{border:none;background:transparent;font-size:12px;font-weight:800;color:var(--rx-sub);padding:6px 11px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.undo-bar button:hover:not(:disabled){color:var(--rx-k);background:rgba(14,15,18,.05)}
+.undo-bar button:disabled{opacity:.35;cursor:default}
+
+/* 미리보기 위 표시 (저장 안 됨) */
+.ovl{position:absolute;inset:0;pointer-events:none;z-index:5}
+.cell-sel{position:absolute;outline:2px solid rgba(47,164,222,.9);outline-offset:-2px;pointer-events:none;display:none}
+.cell-sel span{position:absolute;left:8px;top:8px;height:22px;padding:0 9px;border-radius:999px;background:var(--rx-k);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;white-space:nowrap}
+.guide{position:absolute;display:none;pointer-events:none}
+.guide.v{top:0;bottom:0;width:0;border-left:1.5px dashed #FF3EA5}
+.guide.h{left:0;right:0;height:0;border-top:1.5px dashed #FF3EA5}
+.sticker-box{position:absolute;border:1.5px solid #2FA4DE;box-shadow:0 0 0 1px rgba(255,255,255,.7);transform-origin:center center;pointer-events:none;display:none}
+.st-handle{position:absolute;width:14px;height:14px;margin:-7px 0 0 -7px;background:#fff;border:2px solid #2FA4DE;border-radius:50%;pointer-events:auto;touch-action:none;box-shadow:0 1px 4px rgba(15,23,42,.25)}
+.st-handle[data-h="nw"]{left:0;top:0;cursor:nwse-resize}
+.st-handle[data-h="ne"]{left:100%;top:0;cursor:nesw-resize}
+.st-handle[data-h="sw"]{left:0;top:100%;cursor:nesw-resize}
+.st-handle[data-h="se"]{left:100%;top:100%;cursor:nwse-resize}
+.st-rotate{position:absolute;left:50%;top:100%;width:26px;height:26px;margin:18px 0 0 -13px;border-radius:50%;background:#2FA4DE;color:#fff;display:flex;align-items:center;justify-content:center;pointer-events:auto;touch-action:none;cursor:grab;box-shadow:0 2px 8px rgba(61,152,207,.4)}
+.st-rotate::before{content:"";position:absolute;left:50%;bottom:100%;width:1.5px;height:18px;background:#2FA4DE;transform:translateX(-50%)}
+.st-rotate svg{width:14px;height:14px}
+.st-del{position:absolute;left:50%;bottom:100%;width:24px;height:24px;margin:0 0 12px -12px;border-radius:50%;border:0;background:#fff;color:#8B919A;font-size:12px;line-height:1;cursor:pointer;pointer-events:auto;box-shadow:0 0 0 1px rgba(14,15,18,.12),0 2px 6px rgba(15,23,42,.15)}
+.st-del:hover{color:#e11d48;background:#fff1f2}
+.sticker-box.locked{border-style:dashed;border-color:#94a3b8}
+.sticker-box.locked .st-handle,.sticker-box.locked .st-rotate,.sticker-box.locked .st-del{display:none}
+.sticker-box.locked::after{content:"🔒 잠김";position:absolute;left:50%;bottom:100%;margin-bottom:8px;transform:translateX(-50%);background:#fff;border-radius:999px;font-size:11px;font-weight:700;color:#64748b;padding:3px 9px;white-space:nowrap;box-shadow:0 0 0 1px rgba(14,15,18,.12)}
+body.st-rotating,body.st-rotating *{cursor:grabbing!important}
+
+/* ── 붙여넣기 선택창 ── */
+@keyframes modalFadeIn{from{opacity:0}to{opacity:1}}
+@keyframes cardPopUp{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:none}}
+#paste-modal{display:none;position:fixed;inset:0;z-index:999999;align-items:center;justify-content:center;padding:20px;background:rgba(14,15,18,.35);animation:modalFadeIn .2s ease-out}
+#paste-modal.open{display:flex}
+.paste-card{width:100%;max-width:720px;max-height:calc(100vh - 40px);overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:18px;border-radius:26px;
+  background:linear-gradient(170deg,#fff 55%,#f2f9fe);box-shadow:inset 0 0 0 1px rgba(255,255,255,.95),0 0 0 1px rgba(14,15,18,.08),0 40px 80px -40px rgba(14,15,18,.55);animation:cardPopUp .28s cubic-bezier(.34,1.56,.64,1)}
+.paste-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.paste-head-left{display:flex;align-items:center;gap:10px;min-width:0}
+.paste-chip{display:inline-flex;align-items:center;gap:7px;height:26px;padding:0 11px 0 9px;border-radius:999px;background:var(--rx-k);color:#fff;font-size:11px;font-weight:800;letter-spacing:0;white-space:nowrap;flex-shrink:0}
+.paste-chip i,.paste-apply i{width:7px;height:7px;border-radius:50%;background:var(--rx-p);flex-shrink:0}
+.paste-title{font-size:18px;font-weight:900;letter-spacing:-.05em}
+.paste-close{width:34px;height:34px;border:0;border-radius:50%;background:transparent;color:var(--rx-sub);cursor:pointer;display:grid;place-items:center}
+.paste-close:hover{background:rgba(14,15,18,.05);color:var(--rx-k)}
+.paste-body{display:flex;gap:20px;align-items:stretch}
+.paste-preview-col{width:210px;flex-shrink:0;display:flex;flex-direction:column;gap:10px}
+.paste-preview{position:relative;height:250px;border-radius:18px;background-color:#F3F4F6;
+  background-image:linear-gradient(45deg,#E4E6EA 25%,transparent 25%,transparent 75%,#E4E6EA 75%),linear-gradient(45deg,#E4E6EA 25%,transparent 25%,transparent 75%,#E4E6EA 75%);
+  background-size:16px 16px;background-position:0 0,8px 8px;box-shadow:inset 0 0 0 1px rgba(14,15,18,.08);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.paste-preview img{max-width:88%;max-height:88%;object-fit:contain;border-radius:8px;box-shadow:0 10px 24px -12px rgba(14,15,18,.5)}
+.paste-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 4px;font-size:12px;font-weight:800}
+.paste-meta span:last-child{font-size:11px;font-weight:700;color:var(--rx-sub);white-space:nowrap}
+.paste-tiles{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px}
+.paste-tile{position:relative;text-align:left;border:0;cursor:pointer;padding:14px 16px;border-radius:18px;background:rgba(255,255,255,.7);box-shadow:inset 0 0 0 1px rgba(14,15,18,.1);display:flex;align-items:center;gap:13px;transition:box-shadow .15s ease,background .15s ease}
+.paste-tile:hover{background:#fff;box-shadow:inset 0 0 0 1.5px rgba(47,164,222,.45)}
+.paste-tile.on{background:#fff;box-shadow:0 0 0 1.5px rgba(47,164,222,.6),0 10px 22px -12px rgba(47,164,222,.6)}
+.paste-tile-icon{width:42px;height:42px;border-radius:13px;background:#F3F4F6;display:grid;place-items:center;flex-shrink:0;color:var(--rx-k)}
+.paste-tile.on .paste-tile-icon{background:var(--rx-p);color:#fff}
+.paste-tile-text{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
+.paste-tile-name{font-size:14.5px;font-weight:900;letter-spacing:-.04em;display:flex;align-items:center;gap:6px}
+.paste-tile-desc{font-size:12px;font-weight:500;color:#4B5563;line-height:1.45;word-break:keep-all}
+.paste-tile-tags{display:flex;align-items:center;gap:5px;flex-shrink:0}
+.ptag{height:22px;padding:0 8px;border-radius:999px;font-size:10.5px;font-weight:800;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+.ptag.empty{background:#fff;color:#8B919A;box-shadow:inset 0 0 0 1px rgba(14,15,18,.16)}
+.ptag.empty::before{content:"";width:6px;height:6px;border-radius:50%;box-shadow:inset 0 0 0 1.5px currentColor}
+.ptag.full{background:rgba(47,164,222,.12);color:var(--rx-p2)}
+.ptag.full::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.ptag.rec{background:var(--rx-k);color:#fff}
+.paste-key{min-width:22px;height:22px;border-radius:7px;background:#F3F4F6;color:#4B5563;box-shadow:inset 0 0 0 1px rgba(14,15,18,.12);font-size:11px;font-weight:800;letter-spacing:0;display:flex;align-items:center;justify-content:center}
+.paste-tile.on .paste-key{background:var(--rx-p);color:#fff;box-shadow:none}
+.paste-tile-thumb{width:38px;height:38px;border-radius:9px;object-fit:cover;flex-shrink:0;box-shadow:inset 0 0 0 1px rgba(14,15,18,.1)}
+.paste-notice{display:none;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;background:rgba(47,164,222,.08);box-shadow:inset 0 0 0 1px rgba(47,164,222,.22);font-size:12px;font-weight:600;color:#1C5F86}
+.paste-notice.show{display:flex}
+.paste-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:14px;border-top:1px dashed rgba(14,15,18,.12)}
+.paste-hint{font-size:12px;font-weight:600;color:var(--rx-sub)}
+.paste-hint b{color:var(--rx-k);font-weight:800}
+.paste-actions{display:flex;gap:8px;flex-shrink:0}
+.paste-btn{height:44px;padding:0 22px;border:0;border-radius:999px;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;transition:background .15s ease,color .15s ease}
+.paste-btn.ghost{background:#fff;color:var(--rx-k);box-shadow:inset 0 0 0 1px rgba(14,15,18,.14)}
+.paste-btn.ghost:hover{background:#F8FAFC}
+.paste-btn.primary{background:var(--rx-k);color:#fff;box-shadow:0 10px 20px -12px rgba(14,15,18,.7)}
+.paste-btn.primary:hover{background:var(--rx-p)}
+.paste-btn.primary:hover i{background:#fff}
+
+/* ── 작업 복원 안내 ── */
+@keyframes modalSyringeFloat{0%{transform:translateY(0) rotate(-14deg)}50%{transform:translateY(-4px) rotate(-10deg)}100%{transform:translateY(2px) rotate(-16deg)}}
+#restore-modal{display:none;position:fixed;inset:0;z-index:999999;align-items:center;justify-content:center;padding:20px;background:rgba(14,15,18,.35);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);animation:modalFadeIn .25s ease-out}
+#restore-modal.open{display:flex}
+.restore-card{width:100%;max-width:350px;padding:30px 24px 24px;display:flex;flex-direction:column;align-items:center;text-align:center;border-radius:26px;
+  background:linear-gradient(170deg,#fff 55%,#f2f9fe);box-shadow:inset 0 0 0 1px rgba(255,255,255,.95),0 0 0 1px rgba(14,15,18,.08),0 40px 80px -40px rgba(14,15,18,.55);animation:cardPopUp .3s cubic-bezier(.34,1.56,.64,1)}
+.modal-syringe-wrap{width:110px;height:110px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:16px;overflow:visible;
+  background:radial-gradient(circle at 40% 35%,#fff,#e6f3fb 70%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.95),0 0 0 6px rgba(47,164,222,.1),0 12px 26px -10px rgba(47,164,222,.4)}
+.modal-syringe-svg{width:90px;height:90px;margin-top:8px;overflow:visible;animation:modalSyringeFloat 3.2s ease-in-out infinite alternate;filter:drop-shadow(0 5px 10px rgba(81,170,225,.45))}
+.restore-title{font-size:18px;font-weight:900;letter-spacing:-.05em;color:var(--rx-k)}
+.restore-desc{font-size:13px;font-weight:500;color:var(--rx-sub);line-height:1.6;margin-top:10px;word-break:keep-all}
+.restore-btns{display:flex;gap:8px;width:100%;margin-top:20px}
+.restore-btns button{flex:1;padding:11px 0;border:0;border-radius:999px;font-size:13px;font-weight:800;cursor:pointer;transition:all .15s ease}
+#btnRestoreCancel{background:#fff;color:var(--rx-k);box-shadow:inset 0 0 0 1px rgba(14,15,18,.14)}
+#btnRestoreCancel:hover{background:#F8FAFC}
+#btnRestoreConfirm{background:var(--rx-k);color:#fff;box-shadow:0 10px 20px -12px rgba(14,15,18,.7)}
+#btnRestoreConfirm:hover{background:var(--rx-p)}
+
+@media (max-width:860px){
+  body{flex-direction:column;height:auto;overflow-y:auto}
+  .editor{width:100%;overflow:visible;box-shadow:none;border-right:none;border-top:1px solid rgba(14,15,18,.08);order:2}
+  .stage-wrap{order:1;height:68vh;flex:none}
+  .stage-wrap::after{display:none}
+  .stage{padding:64px 16px 16px}
+  .view-toolbar{right:10px;top:12px}
+  .undo-bar{left:10px;top:12px}
+  .paste-body{flex-direction:column}
+  .paste-preview-col{width:100%}
+  .paste-preview{height:160px}
+}
+@media (prefers-reduced-motion:reduce){.syringe-logo-svg,.modal-syringe-svg,.save-btn::before{animation:none}}
+</style>
+</head>
+<body>
+<aside class="editor" id="editor">
+  <h1 class="editor-title">
+    <svg class="syringe-logo-svg" viewBox="0 0 120 460" preserveAspectRatio="xMidYMid meet" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="logoGlass" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"></stop>
+            <stop offset="45%" stop-color="#eaf6fd" stop-opacity="0.7"></stop>
+            <stop offset="100%" stop-color="#cfe9f9" stop-opacity="0.85"></stop>
+          </linearGradient>
+          <linearGradient id="logoFluid" x1="0" y1="110" x2="0" y2="255" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#a9dcf8"></stop>
+            <stop offset="55%" stop-color="#6cc0ee"></stop>
+            <stop offset="100%" stop-color="#2FA4DE"></stop>
+          </linearGradient>
+          <linearGradient id="logoNeedle" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#ffffff"></stop>
+            <stop offset="50%" stop-color="#9fb4c3"></stop>
+            <stop offset="100%" stop-color="#5f7a8d"></stop>
+          </linearGradient>
+          <pattern id="logoHalftone" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+            <circle cx="3" cy="3" r="1.3" fill="#ffffff" opacity="0.55"></circle>
+          </pattern>
+          <clipPath id="logoClip">
+            <rect x="38.5" y="87" width="43" height="166" rx="4"></rect>
+          </clipPath>
+        </defs>
+
+        <!-- 바늘 (끝에 반짝임) -->
+        <rect x="57.8" y="4" width="4.4" height="58" rx="2.2" fill="url(#logoNeedle)"></rect>
+        <path d="M57.8 8 L60 -2 L62.2 8 Z" fill="#9fb4c3"></path>
+        <circle cx="60" cy="-1" r="3.2" fill="#ffffff">
+          <animate attributeName="r" values="1.5;4.2;1.5" dur="2.60s" repeatCount="indefinite"></animate>
+          <animate attributeName="opacity" values="0.2;1;0.2" dur="2.60s" repeatCount="indefinite"></animate>
+        </circle>
+
+        <!-- 허브 -->
+        <rect x="47" y="58" width="26" height="18" rx="5" fill="url(#logoGlass)" stroke="#51aae1" stroke-width="2.6"></rect>
+        <rect x="51" y="62" width="4" height="10" rx="2" fill="#ffffff" opacity="0.9"></rect>
+        <rect x="32" y="74" width="56" height="12" rx="6" fill="#85c8f2" stroke="#3d98cf" stroke-width="2.6"></rect>
+        <rect x="38" y="76.5" width="22" height="3" rx="1.5" fill="#ffffff" opacity="0.7"></rect>
+
+        <!-- 유리 실린더 -->
+        <rect x="36" y="85" width="48" height="267" rx="9" fill="url(#logoGlass)" stroke="#51aae1" stroke-width="3"></rect>
+
+        <!-- 출렁이는 약액 -->
+        <g clip-path="url(#logoClip)">
+          <g>
+            <path d="M-4.5 120 q10.75 -7 21.5 0 t21.5 0 t21.5 0 t21.5 0 t21.5 0 t21.5 0 V262 H-4.5 Z" fill="url(#logoFluid)"></path>
+            <path d="M-4.5 120 q10.75 -7 21.5 0 t21.5 0 t21.5 0 t21.5 0 t21.5 0 t21.5 0 V262 H-4.5 Z" fill="url(#logoHalftone)"></path>
+            <path d="M-4.5 120 q10.75 -7 21.5 0 t21.5 0 t21.5 0 t21.5 0 t21.5 0 t21.5 0" stroke="#ffffff" stroke-width="2.4" stroke-opacity="0.85"></path>
+            <animateTransform attributeName="transform" type="translate" values="0 0; -21.5 2.5; -43 0" dur="3.20s" repeatCount="indefinite"></animateTransform>
+          </g>
+
+          <!-- 뽀글뽀글 기포 -->
+          <circle cx="50" cy="245" r="4.2" fill="#ffffff">
+            <animate attributeName="cy" from="245" to="118" dur="2.40s" repeatCount="indefinite"></animate>
+            <animate attributeName="cx" values="50;46;53;50" dur="2.40s" repeatCount="indefinite"></animate>
+            <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.15;0.85;1" dur="2.40s" repeatCount="indefinite"></animate>
+          </circle>
+          <circle cx="67" cy="245" r="5.4" fill="#ffffff">
+            <animate attributeName="cy" from="245" to="118" dur="3.00s" begin="0.5s" repeatCount="indefinite"></animate>
+            <animate attributeName="cx" values="67;71;63;67" dur="3.00s" begin="0.5s" repeatCount="indefinite"></animate>
+            <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.15;0.85;1" dur="3.00s" begin="0.5s" repeatCount="indefinite"></animate>
+          </circle>
+          <circle cx="58" cy="245" r="3" fill="#eff6ff">
+            <animate attributeName="cy" from="245" to="118" dur="2.00s" begin="0.2s" repeatCount="indefinite"></animate>
+            <animate attributeName="cx" values="58;55;60;58" dur="2.00s" begin="0.2s" repeatCount="indefinite"></animate>
+            <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.15;0.85;1" dur="2.00s" begin="0.2s" repeatCount="indefinite"></animate>
+          </circle>
+        </g>
+
+        <!-- 눈금 -->
+        <g stroke="#3d98cf" stroke-linecap="round" opacity="0.75">
+          <line x1="70" y1="110" x2="80" y2="110" stroke-width="2.4"></line>
+          <line x1="74" y1="128" x2="80" y2="128" stroke-width="1.8"></line>
+          <line x1="70" y1="146" x2="80" y2="146" stroke-width="2.4"></line>
+          <line x1="74" y1="164" x2="80" y2="164" stroke-width="1.8"></line>
+          <line x1="70" y1="182" x2="80" y2="182" stroke-width="2.4"></line>
+          <line x1="74" y1="200" x2="80" y2="200" stroke-width="1.8"></line>
+          <line x1="70" y1="218" x2="80" y2="218" stroke-width="2.4"></line>
+          <line x1="74" y1="236" x2="80" y2="236" stroke-width="1.8"></line>
+        </g>
+
+        <!-- 유리 하이라이트 -->
+        <rect x="41.5" y="94" width="5" height="244" rx="2.5" fill="#ffffff" opacity="0.85"></rect>
+        <rect x="49" y="96" width="2" height="90" rx="1" fill="#ffffff" opacity="0.6"></rect>
+
+        <!-- 고무 마개 -->
+        <rect x="38.5" y="252" width="43" height="12" rx="3" fill="#2a6f99"></rect>
+        <rect x="38.5" y="255" width="43" height="2" fill="#ffffff" opacity="0.25"></rect>
+        <rect x="38.5" y="260" width="43" height="2" fill="#ffffff" opacity="0.25"></rect>
+
+        <!-- 손잡이 날개 -->
+        <rect x="22" y="346" width="76" height="12" rx="6" fill="#ffffff" stroke="#51aae1" stroke-width="2.8"></rect>
+        <rect x="28" y="349" width="30" height="3" rx="1.5" fill="#85c8f2"></rect>
+
+        <!-- 밀대 + 엄지 받침 -->
+        <rect x="54" y="264" width="12" height="122" rx="3" fill="url(#logoGlass)" stroke="#51aae1" stroke-width="2.6"></rect>
+        <rect x="57" y="270" width="2.6" height="108" rx="1.3" fill="#ffffff" opacity="0.9"></rect>
+        <rect x="30" y="386" width="60" height="16" rx="8" fill="#ffffff" stroke="#51aae1" stroke-width="2.8"></rect>
+        <rect x="36" y="390" width="48" height="7" rx="3.5" fill="url(#logoFluid)"></rect>
+
+        <!-- 곁에서 반짝이는 ✦ -->
+        <path d="M100 118 C101.3 126 104 128.7 112 130 C104 131.3 101.3 134 100 142 C98.7 134 96 131.3 88 130 C96 128.7 98.7 126 100 118 Z" fill="#2FA4DE">
+          <animateTransform attributeName="transform" type="rotate" values="0 100 130; 45 100 130; 0 100 130" dur="3.00s" repeatCount="indefinite"></animateTransform>
+          <animate attributeName="opacity" values="0.25;1;0.25" dur="3.00s" repeatCount="indefinite"></animate>
+        </path>
+        <path d="M14 214 C14.8 219 16.6 220.8 21.6 221.6 C16.6 222.4 14.8 224.2 14 229.2 C13.2 224.2 11.4 222.4 6.4 221.6 C11.4 220.8 13.2 219 14 214 Z" fill="#85c8f2">
+          <animate attributeName="opacity" values="1;0.2;1" dur="2.40s" repeatCount="indefinite"></animate>
+        </path>
+      </svg>
+    <span>윳! <span class="hl">페어샷</span> 메이커</span>
+  </h1>
+  
+  <!-- 01 이미지 칸 -->
+  <section class="panel-card">
+    <div class="panel-card-title">✦ 이미지 칸</div>
+    <div class="slot empty" id="slot0" data-i="0" tabindex="0" role="button" aria-label="1번 칸 이미지 넣기">
+      <div class="slot-thumb"><canvas width="116" height="116"></canvas><span class="slot-ico">＋</span></div>
+      <div class="slot-info">
+        <div class="slot-top"><b class="slot-num">1번 칸</b><span class="slot-pos">왼쪽</span><span class="slot-tag">비어 있음</span></div>
+        <span class="slot-name">클릭 · 끌어다 놓기 · Ctrl+V</span>
+      </div>
+      <div class="slot-btns"><button type="button" class="mini-btn slot-clear danger">비우기</button></div>
+      <input type="file" accept="image/*" hidden>
+    </div>
+    <div class="swap-row"><button type="button" class="swap-btn" id="swapBtn">⇄ 순서 변경</button></div>
+    <div class="slot empty" id="slot1" data-i="1" tabindex="0" role="button" aria-label="2번 칸 이미지 넣기">
+      <div class="slot-thumb"><canvas width="116" height="116"></canvas><span class="slot-ico">＋</span></div>
+      <div class="slot-info">
+        <div class="slot-top"><b class="slot-num">2번 칸</b><span class="slot-pos">오른쪽</span><span class="slot-tag">비어 있음</span></div>
+        <span class="slot-name">클릭 · 끌어다 놓기 · Ctrl+V</span>
+      </div>
+      <div class="slot-btns"><button type="button" class="mini-btn slot-clear danger">비우기</button></div>
+      <input type="file" accept="image/*" hidden>
+    </div>
+    <p class="note">💬 파일은 서버에 <b>저장되지 않습니다.</b></p>
+  </section>
+
+  <!-- 02 붙이기 방식 -->
+  <section class="panel-card">
+    <div class="panel-card-title">✦ 붙이기 방식</div>
+    <div class="field-group"><span class="label-sub">방향</span>
+      <div class="seg" data-key="dir"><button data-val="h">◧ 좌우</button><button data-val="v">⬒ 상하</button></div>
+    </div>
+    <div class="field-group"><span class="label-sub">비율</span>
+      <div class="seg grid2 mode-seg" data-key="mode">
+        <button data-val="orig">원본 그대로</button>
+        <button data-val="follow">한쪽 비율 따라가기</button>
+        <button data-val="total">전체 비율 지정</button>
+        <button data-val="cell">칸별 비율 지정</button>
+      </div>
+      <p class="note" id="modeNote"></p>
+    </div>
+
+    <div class="field-group when-follow"><span class="label-sub">기준 이미지</span>
+      <div class="seg" data-key="ref"><button data-val="0">1번 칸 비율</button><button data-val="1">2번 칸 비율</button></div>
+    </div>
+
+    <div class="field-group when-total"><span class="label-sub">전체 비율 <span class="sub">가로 : 세로</span></span>
+      <div class="seg grid5" data-key="ratio" data-list="1:1,4:5,3:4,2:3,9:16,5:4,4:3,3:2,16:9,free"></div>
+      <div class="ratio-free" id="freeTotal"><input class="text" type="number" min="0.1" step="0.1" id="cW" aria-label="전체 가로 비율"><span>:</span><input class="text" type="number" min="0.1" step="0.1" id="cH" aria-label="전체 세로 비율"></div>
+    </div>
+    <div class="field-group when-total"><span class="label-sub">칸 나누기 <button type="button" class="mini-btn" id="splitReset" style="margin-left:auto">↶ 되돌리기</button></span>
+      <div class="range-row"><input type="range" id="fSplit" min="15" max="85" step="1" value="50" aria-label="칸 나누기"><span class="val" id="vSplit">50 : 50</span></div>
+    </div>
+
+    <div class="field-group when-cell"><span class="label-sub" id="cr0Label">1번 칸 비율</span>
+      <div class="seg grid5" data-key="cr0" data-list="orig,1:1,4:5,3:4,2:3,9:16,4:3,3:2,16:9,free"></div>
+      <div class="ratio-free" id="freeC0"><input class="text" type="number" min="0.1" step="0.1" id="c0W" aria-label="1번 칸 가로 비율"><span>:</span><input class="text" type="number" min="0.1" step="0.1" id="c0H" aria-label="1번 칸 세로 비율"></div>
+    </div>
+    <div class="field-group when-cell"><span class="label-sub" id="cr1Label">2번 칸 비율</span>
+      <div class="seg grid5" data-key="cr1" data-list="orig,1:1,4:5,3:4,2:3,9:16,4:3,3:2,16:9,free"></div>
+      <div class="ratio-free" id="freeC1"><input class="text" type="number" min="0.1" step="0.1" id="c1W" aria-label="2번 칸 가로 비율"><span>:</span><input class="text" type="number" min="0.1" step="0.1" id="c1H" aria-label="2번 칸 세로 비율"></div>
+    </div>
+  </section>
+
+  <!-- 03 여백 & 틀 -->
+  <section class="panel-card">
+    <div class="panel-card-title">✦ 프레임</div>
+    <div class="field-group"><label class="label-sub" for="fGap">사이 간격</label>
+      <div class="range-row"><input type="range" id="fGap" min="0" max="150" step="1" value="0"><span class="val" id="vGap">0</span></div>
+    </div>
+    <div class="field-group"><label class="label-sub" for="fPad">바깥 여백</label>
+      <div class="range-row"><input type="range" id="fPad" min="0" max="200" step="1" value="0"><span class="val" id="vPad">0</span></div>
+    </div>
+    <div class="field-group"><span class="label-sub">틀 색</span>
+      <div class="color-row">
+        <div class="color-picker-wrap"><input type="color" id="fFrame" value="#ffffff" aria-label="틀 색 고르기"><input type="text" class="hex-in" id="fFrameHex" value="#FFFFFF" maxlength="7" spellcheck="false" aria-label="틀 색 헥스코드"></div>
+        <button type="button" class="chip-sw" data-frame="#FFFFFF" style="background:#fff" title="흰색"></button>
+        <button type="button" class="chip-sw" data-frame="#0E0F12" style="background:#0E0F12" title="검정"></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 칸 편집 -->
+  <section class="panel-card">
+    <div class="panel-card-title">✦ 이미지 편집</div>
+    <div class="seg" data-key="selCell"><button data-val="0" id="selBtn0">1번 칸</button><button data-val="1" id="selBtn1">2번 칸</button></div>
+    <p class="cell-empty-note hidden" id="cellEmptyNote">칸이 비어 있습니다. 이미지를 첨부해 주세요.</p>
+    <div class="cell-ctl" id="cellCtl">
+      <div class="field-group"><span class="label-sub">확대 <button type="button" class="mini-btn" id="cellCenter" style="margin-left:auto">⌖ 가운데로</button></span>
+        <div class="range-row"><input type="range" id="fZoom" min="100" max="500" step="1" value="100"><span class="val" id="vZoom">100%</span></div>
+      </div>
+      <div class="tool-row">
+        <button type="button" class="tool-btn" id="cellFlip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M8 7 3 12l5 5V7z"/><path d="M16 7l5 5-5 5V7z"/></svg>좌우 반전</button>
+        <button type="button" class="tool-btn" id="cellRotL"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><polyline points="3 3 3 9 9 9"/></svg>왼쪽 90°</button>
+        <button type="button" class="tool-btn" id="cellRotR"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 3 21 9 15 9"/></svg>오른쪽 90°</button>
+      </div>
+      <div class="panel-divider"></div>
+      <div class="sub-head"><span class="label-sub">보정</span><button type="button" class="mini-btn" id="adjReset">↺ 보정 초기화</button></div>
+      <div class="range-row"><span class="lab">명도</span><input type="range" id="aB" min="-100" max="100" step="1" value="0" aria-label="명도"><span class="val" id="vB">0</span></div>
+      <div class="range-row"><span class="lab">채도</span><input type="range" id="aS" min="-100" max="100" step="1" value="0" aria-label="채도"><span class="val" id="vS">0</span></div>
+      <div class="range-row"><span class="lab">대비</span><input type="range" id="aC" min="-100" max="100" step="1" value="0" aria-label="대비"><span class="val" id="vC">0</span></div>
+      <div class="range-row"><span class="lab">색온도</span><input type="range" id="aT" min="-100" max="100" step="1" value="0" aria-label="색온도"><span class="val" id="vT">0</span></div>
+      <label class="toggle-row"><input type="checkbox" id="aG"><span class="sw-track"></span><span class="toggle-label">흑백</span></label>
+      <p class="note">✦ 미리보기에서 이미지 위치 조정이 가능합니다.</p>
+    </div>
+  </section>
+
+  <!-- 05 스티커 -->
+  <section class="panel-card">
+    <div class="panel-card-title">✦ 스티커</div>
+    <label class="file-dropzone" id="stDrop">
+      <input type="file" accept="image/*" multiple id="stIn">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v7l-7 7H6a2 2 0 0 1-2-2z"/><path d="M13 20v-5a2 2 0 0 1 2-2h5"/></svg>
+      <span>＋ 스티커 추가 <span style="opacity:.65;font-size:11px">여러 장 선택 가능</span></span>
+    </label>
+    <p class="note" id="stEmpty">현재 업로드된 스티커가 없습니다.</p>
+    <div class="thumb-list" id="stList"></div>
+    <div class="st-ctl hidden" id="stCtl">
+      <div class="field-group"><label class="label-sub" for="sB">테두리 두께</label>
+        <div class="range-row"><input type="range" id="sB" min="0" max="60" step="1" value="0"><span class="val" id="vSB">0</span></div>
+      </div>
+      <div class="field-group"><span class="label-sub">테두리 색</span>
+        <div class="color-row">
+          <div class="color-picker-wrap"><input type="color" id="sCol" value="#ffffff" aria-label="테두리 색 고르기"><input type="text" class="hex-in" id="sColHex" value="#FFFFFF" maxlength="7" spellcheck="false" aria-label="테두리 색 헥스코드"></div>
+          <button type="button" class="chip-sw" data-stcol="#FFFFFF" style="background:#fff" title="흰색"></button>
+          <button type="button" class="chip-sw" data-stcol="#0E0F12" style="background:#0E0F12" title="검정"></button>
+        </div>
+      </div>
+      <div class="field-group"><label class="label-sub" for="sR">모서리 둥글기</label>
+        <div class="range-row"><input type="range" id="sR" min="0" max="50" step="1" value="0"><span class="val" id="vSR">0</span></div>
+      </div>
+      <label class="toggle-row"><input type="checkbox" id="sSh"><span class="sw-track"></span><span class="toggle-label">그림자</span></label>
+      <div class="tool-row">
+        <button type="button" class="tool-btn" data-st="lock" id="stLock">🔒 잠금</button>
+        <button type="button" class="tool-btn" data-st="front">맨 앞으로</button>
+        <button type="button" class="tool-btn" data-st="back">맨 뒤로</button>
+      </div>
+      <div class="tool-row">
+        <button type="button" class="tool-btn" data-st="dup">복제</button>
+        <button type="button" class="tool-btn danger" data-st="del">삭제</button>
+      </div>
+    </div>
+    <p class="note">✦ 스티커 이동 시 경계에 자동 스냅 (<b>Alt</b>시 해제)<br>✦ 회전 + <b>Shift</b> = 15° 단위 회전</p>
+  </section>
+
+  <!-- 06 내보내기 -->
+  <section class="panel-card">
+    <div class="panel-card-title">✦ 내보내기</div>
+    <div class="size-chip"><span>저장 크기</span><b id="outSize">—</b></div>
+    <button class="copy-btn" id="copyBtn">클립보드 복사</button>
+    <button class="save-btn" id="saveBtn">이미지 저장 <span class="btn-sub">PNG</span></button>
+    <p class="status" id="status" role="status" aria-live="polite"></p>
+  </section>
+</aside>
+
+<main class="stage-wrap" id="stageWrap">
+  <div class="undo-bar">
+    <button type="button" id="undoBtn" title="되돌리기 (Ctrl+Z)">↶ 되돌리기</button>
+    <button type="button" id="redoBtn" title="다시 하기 (Ctrl+Shift+Z)">↷</button>
+  </div>
+  <div class="view-toolbar" id="viewBar">
+    <button type="button" data-view="fit" class="on">⤢ 전체</button>
+    <button type="button" data-view="width">↔ 가로 맞춤</button>
+    <span class="view-sep"></span>
+    <button type="button" data-zoom="-" title="축소 (Ctrl+휠)">−</button>
+    <span class="view-pct" id="viewPct">100%</span>
+    <button type="button" data-zoom="+" title="확대 (Ctrl+휠)">＋</button>
+  </div>
+  <div class="stage" id="stage">
+    <div class="canvas-container" id="cc">
+      <canvas id="cv" width="10" height="10" aria-label="미리보기"></canvas>
+      <div class="ovl" id="ovl">
+        <div class="cell-sel" id="cellSel"><span></span></div>
+        <div class="guide v" id="gV"></div>
+        <div class="guide h" id="gH"></div>
+        <div class="sticker-box" id="stBox">
+          <span class="st-handle" data-h="nw"></span>
+          <span class="st-handle" data-h="ne"></span>
+          <span class="st-handle" data-h="sw"></span>
+          <span class="st-handle" data-h="se"></span>
+          <span class="st-rotate" data-h="rot" title="돌려서 회전 (Shift: 15° 단위)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"></path><polyline points="21 3 21 9 15 9"></polyline></svg></span>
+          <button type="button" class="st-del" id="stDelBtn" title="스티커 삭제">✕</button>
+        </div>
+      </div>
+      <div class="drop-overlay">이미지 놓기</div>
+    </div>
+    <p class="hint" id="hint">*미리보기 화면에 이미지를 <b>드래그</b>하거나 <b>Ctrl+V</b>로도 추가 가능합니다♡<br>칸 끌기 = 위치 조정 / 휠 = 확대·축소 / 빈 칸 클릭 = 이미지 선택</p>
+  </div>
+</main>
+
+<!-- 붙여넣기 · 끌어다 놓기 선택창 -->
+<div id="paste-modal">
+  <div class="paste-card" role="dialog" aria-modal="true" aria-label="이미지 넣을 곳 선택">
+    <div class="paste-head">
+      <div class="paste-head-left">
+        <span class="paste-chip"><i></i><span id="pChip">Ctrl + V</span></span>
+        <h2 class="paste-title">이미지 넣을 곳 선택</h2>
+      </div>
+      <button type="button" class="paste-close" id="pClose" aria-label="닫기"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+    </div>
+    <div class="paste-body">
+      <div class="paste-preview-col">
+        <div class="paste-preview" id="pPrev"></div>
+        <div class="paste-meta"><span id="pMetaL">붙여넣은 이미지</span><span id="pMetaR"></span></div>
+      </div>
+      <div class="paste-tiles" id="pTiles">
+        <button type="button" class="paste-tile" data-t="0">
+          <span class="paste-tile-icon" data-ico="0"></span>
+          <span class="paste-tile-text"><span class="paste-tile-name"><span class="pt-name">1번 칸</span></span><span class="paste-tile-desc"></span></span>
+          <span class="paste-tile-tags"><span class="ptag rec hidden">추천</span><span class="ptag st"></span><span class="paste-key">1</span></span>
+        </button>
+        <button type="button" class="paste-tile" data-t="1">
+          <span class="paste-tile-icon" data-ico="1"></span>
+          <span class="paste-tile-text"><span class="paste-tile-name"><span class="pt-name">2번 칸</span></span><span class="paste-tile-desc"></span></span>
+          <span class="paste-tile-tags"><span class="ptag rec hidden">추천</span><span class="ptag st"></span><span class="paste-key">2</span></span>
+        </button>
+        <button type="button" class="paste-tile" data-t="st">
+          <span class="paste-tile-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v7l-7 7H6a2 2 0 0 1-2-2z"/><path d="M13 20v-5a2 2 0 0 1 2-2h5"/><path d="M9 10h.01M14 10h.01"/></svg></span>
+          <span class="paste-tile-text"><span class="paste-tile-name">스티커</span><span class="paste-tile-desc">칸 위에 자유롭게 얹는 이미지</span></span>
+          <span class="paste-tile-tags"><span class="ptag rec hidden">추천</span><span class="paste-key">3</span></span>
+        </button>
+      </div>
+    </div>
+    <div class="paste-notice" id="pNotice"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg><span id="pNoticeText"></span></div>
+    <div class="paste-foot">
+      <span class="paste-hint">숫자 <b>1~3</b>으로 선택 / <b>Enter</b>로 삽입</span>
+      <div class="paste-actions">
+        <button type="button" class="paste-btn ghost" id="pCancel">취소</button>
+        <button type="button" class="paste-btn primary paste-apply" id="pApply"><i></i><span>넣기</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 작업 복원 안내 -->
+<div id="restore-modal">
+  <div class="restore-card" role="dialog" aria-modal="true" aria-label="작업 복원 안내">
+      <div class="modal-syringe-wrap">
+        <svg class="modal-syringe-svg" viewBox="0 0 120 460" preserveAspectRatio="xMidYMid meet" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="modalGlass" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"></stop>
+            <stop offset="45%" stop-color="#eaf6fd" stop-opacity="0.7"></stop>
+            <stop offset="100%" stop-color="#cfe9f9" stop-opacity="0.85"></stop>
+          </linearGradient>
+          <linearGradient id="modalFluid" x1="0" y1="110" x2="0" y2="255" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#a9dcf8"></stop>
+            <stop offset="55%" stop-color="#6cc0ee"></stop>
+            <stop offset="100%" stop-color="#2FA4DE"></stop>
+          </linearGradient>
+          <linearGradient id="modalNeedle" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#ffffff"></stop>
+            <stop offset="50%" stop-color="#9fb4c3"></stop>
+            <stop offset="100%" stop-color="#5f7a8d"></stop>
+          </linearGradient>
+          <pattern id="modalHalftone" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+            <circle cx="3" cy="3" r="1.3" fill="#ffffff" opacity="0.55"></circle>
+          </pattern>
+          <clipPath id="modalClip">
+            <rect x="38.5" y="87" width="43" height="166" rx="4"></rect>
+          </clipPath>
+        </defs>
+
+        <!-- 바늘 (끝에 반짝임) -->
+        <rect x="57.8" y="4" width="4.4" height="58" rx="2.2" fill="url(#modalNeedle)"></rect>
+        <path d="M57.8 8 L60 -2 L62.2 8 Z" fill="#9fb4c3"></path>
+        <circle cx="60" cy="-1" r="3.2" fill="#ffffff">
+          <animate attributeName="r" values="1.5;4.2;1.5" dur="2.60s" repeatCount="indefinite"></animate>
+          <animate attributeName="opacity" values="0.2;1;0.2" dur="2.60s" repeatCount="indefinite"></animate>
+        </circle>
+
+        <!-- 허브 -->
+        <rect x="47" y="58" width="26" height="18" rx="5" fill="url(#modalGlass)" stroke="#51aae1" stroke-width="2.6"></rect>
+        <rect x="51" y="62" width="4" height="10" rx="2" fill="#ffffff" opacity="0.9"></rect>
+        <rect x="32" y="74" width="56" height="12" rx="6" fill="#85c8f2" stroke="#3d98cf" stroke-width="2.6"></rect>
+        <rect x="38" y="76.5" width="22" height="3" rx="1.5" fill="#ffffff" opacity="0.7"></rect>
+
+        <!-- 유리 실린더 -->
+        <rect x="36" y="85" width="48" height="267" rx="9" fill="url(#modalGlass)" stroke="#51aae1" stroke-width="3"></rect>
+
+        <!-- 출렁이는 약액 -->
+        <g clip-path="url(#modalClip)">
+          <g>
+            <path d="M-4.5 120 q10.75 -7 21.5 0 t21.5 0 t21.5 0 t21.5 0 t21.5 0 t21.5 0 V262 H-4.5 Z" fill="url(#modalFluid)"></path>
+            <path d="M-4.5 120 q10.75 -7 21.5 0 t21.5 0 t21.5 0 t21.5 0 t21.5 0 t21.5 0 V262 H-4.5 Z" fill="url(#modalHalftone)"></path>
+            <path d="M-4.5 120 q10.75 -7 21.5 0 t21.5 0 t21.5 0 t21.5 0 t21.5 0 t21.5 0" stroke="#ffffff" stroke-width="2.4" stroke-opacity="0.85"></path>
+            <animateTransform attributeName="transform" type="translate" values="0 0; -21.5 2.5; -43 0" dur="3.20s" repeatCount="indefinite"></animateTransform>
+          </g>
+
+          <!-- 뽀글뽀글 기포 -->
+          <circle cx="50" cy="245" r="4.2" fill="#ffffff">
+            <animate attributeName="cy" from="245" to="118" dur="2.40s" repeatCount="indefinite"></animate>
+            <animate attributeName="cx" values="50;46;53;50" dur="2.40s" repeatCount="indefinite"></animate>
+            <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.15;0.85;1" dur="2.40s" repeatCount="indefinite"></animate>
+          </circle>
+          <circle cx="67" cy="245" r="5.4" fill="#ffffff">
+            <animate attributeName="cy" from="245" to="118" dur="3.00s" begin="0.5s" repeatCount="indefinite"></animate>
+            <animate attributeName="cx" values="67;71;63;67" dur="3.00s" begin="0.5s" repeatCount="indefinite"></animate>
+            <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.15;0.85;1" dur="3.00s" begin="0.5s" repeatCount="indefinite"></animate>
+          </circle>
+          <circle cx="58" cy="245" r="3" fill="#eff6ff">
+            <animate attributeName="cy" from="245" to="118" dur="2.00s" begin="0.2s" repeatCount="indefinite"></animate>
+            <animate attributeName="cx" values="58;55;60;58" dur="2.00s" begin="0.2s" repeatCount="indefinite"></animate>
+            <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.15;0.85;1" dur="2.00s" begin="0.2s" repeatCount="indefinite"></animate>
+          </circle>
+        </g>
+
+        <!-- 눈금 -->
+        <g stroke="#3d98cf" stroke-linecap="round" opacity="0.75">
+          <line x1="70" y1="110" x2="80" y2="110" stroke-width="2.4"></line>
+          <line x1="74" y1="128" x2="80" y2="128" stroke-width="1.8"></line>
+          <line x1="70" y1="146" x2="80" y2="146" stroke-width="2.4"></line>
+          <line x1="74" y1="164" x2="80" y2="164" stroke-width="1.8"></line>
+          <line x1="70" y1="182" x2="80" y2="182" stroke-width="2.4"></line>
+          <line x1="74" y1="200" x2="80" y2="200" stroke-width="1.8"></line>
+          <line x1="70" y1="218" x2="80" y2="218" stroke-width="2.4"></line>
+          <line x1="74" y1="236" x2="80" y2="236" stroke-width="1.8"></line>
+        </g>
+
+        <!-- 유리 하이라이트 -->
+        <rect x="41.5" y="94" width="5" height="244" rx="2.5" fill="#ffffff" opacity="0.85"></rect>
+        <rect x="49" y="96" width="2" height="90" rx="1" fill="#ffffff" opacity="0.6"></rect>
+
+        <!-- 고무 마개 -->
+        <rect x="38.5" y="252" width="43" height="12" rx="3" fill="#2a6f99"></rect>
+        <rect x="38.5" y="255" width="43" height="2" fill="#ffffff" opacity="0.25"></rect>
+        <rect x="38.5" y="260" width="43" height="2" fill="#ffffff" opacity="0.25"></rect>
+
+        <!-- 손잡이 날개 -->
+        <rect x="22" y="346" width="76" height="12" rx="6" fill="#ffffff" stroke="#51aae1" stroke-width="2.8"></rect>
+        <rect x="28" y="349" width="30" height="3" rx="1.5" fill="#85c8f2"></rect>
+
+        <!-- 밀대 + 엄지 받침 -->
+        <rect x="54" y="264" width="12" height="122" rx="3" fill="url(#modalGlass)" stroke="#51aae1" stroke-width="2.6"></rect>
+        <rect x="57" y="270" width="2.6" height="108" rx="1.3" fill="#ffffff" opacity="0.9"></rect>
+        <rect x="30" y="386" width="60" height="16" rx="8" fill="#ffffff" stroke="#51aae1" stroke-width="2.8"></rect>
+        <rect x="36" y="390" width="48" height="7" rx="3.5" fill="url(#modalFluid)"></rect>
+
+        <!-- 곁에서 반짝이는 ✦ -->
+        <path d="M100 118 C101.3 126 104 128.7 112 130 C104 131.3 101.3 134 100 142 C98.7 134 96 131.3 88 130 C96 128.7 98.7 126 100 118 Z" fill="#2FA4DE">
+          <animateTransform attributeName="transform" type="rotate" values="0 100 130; 45 100 130; 0 100 130" dur="3.00s" repeatCount="indefinite"></animateTransform>
+          <animate attributeName="opacity" values="0.25;1;0.25" dur="3.00s" repeatCount="indefinite"></animate>
+        </path>
+        <path d="M14 214 C14.8 219 16.6 220.8 21.6 221.6 C16.6 222.4 14.8 224.2 14 229.2 C13.2 224.2 11.4 222.4 6.4 221.6 C11.4 220.8 13.2 219 14 214 Z" fill="#85c8f2">
+          <animate attributeName="opacity" values="1;0.2;1" dur="2.40s" repeatCount="indefinite"></animate>
+        </path>
+      </svg>
+    </div>
+    <div class="restore-title">작업 복원 안내</div>
+    <div class="restore-desc">이전에 편집하던 내용이 남아 있습니다.<br>작업을 이어서 진행하시겠습니까?</div>
+    <div class="restore-btns">
+      <button type="button" id="btnRestoreCancel">처음부터</button>
+      <button type="button" id="btnRestoreConfirm">불러오기</button>
+    </div>
+  </div>
+</div>
+<script>
+(() => {
+const $ = id => document.getElementById(id);
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const mk = (w, h) => { const c = document.createElement('canvas'); c.width = Math.max(1, Math.round(w)); c.height = Math.max(1, Math.round(h)); return c; };
+let uid = 1;
+
+/* ═════════════ 상태 ═════════════ */
+const S = {
+  dir: 'h', mode: 'orig', ref: 0,
+  ratio: '4:5', custom: [4, 5], split: 50,
+  cellRatio: ['3:4', '3:4'], cellCustom: [[3, 4], [3, 4]],
+  gap: 0, pad: 0, frame: '#FFFFFF'
+};
+const newAdj = () => ({ b: 0, s: 0, c: 0, t: 0, g: false });
+const newCell = () => ({ img: null, name: '', zoom: 1, fx: 0.5, fy: 0.5, rot: 0, flip: false, adj: newAdj(), base: null, proc: null });
+const cells = [newCell(), newCell()];
+let stickers = [];
+let selId = null;      // 선택한 스티커
+let selCell = 0;       // 편집 중인 칸
+let LAY = null, OUT = null, PK = 1;
+
+const cv = $('cv'), ctx = cv.getContext('2d');
+const stageEl = $('stage'), cc = $('cc');
+
+function setStatus(t) { $('status').textContent = t || ''; }
+
+/* ═════════════ 이미지 불러오기 ═════════════ */
+const isImg = f => f && (f.type && f.type.startsWith('image/') || /\.(png|jpe?g|webp|gif|avif|bmp)$/i.test(f.name || ''));
+function fileToCanvas(file, cap) {
+  return new Promise((res, rej) => {
+    const u = URL.createObjectURL(file), im = new Image();
+    im.onload = () => {
+      URL.revokeObjectURL(u);
+      const w = im.naturalWidth || im.width, h = im.naturalHeight || im.height, k = Math.min(1, cap / Math.max(w, h));
+      const c = mk(w * k, h * k), g = c.getContext('2d');
+      g.imageSmoothingQuality = 'high'; g.drawImage(im, 0, 0, c.width, c.height);
+      c._id = uid++; res(c);
+    };
+    im.onerror = () => { URL.revokeObjectURL(u); rej(new Error('bad image')); };
+    im.src = u;
+  });
+}
+function hasAlpha(c) {
+  try {
+    const t = mk(64, 64), g = t.getContext('2d', { willReadFrequently: true });
+    g.drawImage(c, 0, 0, 64, 64);
+    const d = g.getImageData(0, 0, 64, 64).data; let n = 0;
+    for (let i = 3; i < d.length; i += 4) if (d[i] < 235) n++;
+    return n > 40;
+  } catch (e) { return false; }
+}
+
+/* ═════════════ 칸 이미지 처리 (회전 · 반전 · 보정) ═════════════ */
+function buildBase(c) {
+  const s = c.img, r = ((c.rot % 360) + 360) % 360, swap = r % 180 !== 0;
+  const b = mk(swap ? s.height : s.width, swap ? s.width : s.height), g = b.getContext('2d');
+  g.translate(b.width / 2, b.height / 2);
+  if (c.flip) g.scale(-1, 1);
+  g.rotate(r * Math.PI / 180);
+  g.drawImage(s, -s.width / 2, -s.height / 2);
+  return b;
+}
+const adjZero = a => !a.b && !a.s && !a.c && !a.t && !a.g;
+function processAdj(src, a, maxSide) {
+  const k = maxSide ? Math.min(1, maxSide / Math.max(src.width, src.height)) : 1;
+  const c = mk(src.width * k, src.height * k), g = c.getContext('2d', { willReadFrequently: true });
+  g.imageSmoothingQuality = 'high'; g.drawImage(src, 0, 0, c.width, c.height);
+  const id = g.getImageData(0, 0, c.width, c.height), d = id.data;
+  const fb = 1 + a.b / 100 * 0.7, fc = 1 + a.c / 100 * 0.8, fs = 1 + a.s / 100;
+  const tr = a.t * 0.28, tg = a.t * 0.04, tb = -a.t * 0.28, gray = a.g;
+  const lut = new Float32Array(256);
+  for (let i = 0; i < 256; i++) lut[i] = (i * fb - 128) * fc + 128;
+  for (let p = 0; p < d.length; p += 4) {
+    let r = lut[d[p]] + tr, gg = lut[d[p + 1]] + tg, b = lut[d[p + 2]] + tb;
+    const L = 0.2126 * r + 0.7152 * gg + 0.0722 * b;
+    if (gray) { r = gg = b = L; }
+    else if (fs !== 1) { r = L + (r - L) * fs; gg = L + (gg - L) * fs; b = L + (b - L) * fs; }
+    d[p] = r; d[p + 1] = gg; d[p + 2] = b;
+  }
+  g.putImageData(id, 0, 0);
+  return c;
+}
+const fullT = [0, 0];
+function rebuildBase(i) {
+  const c = cells[i];
+  if (!c.img) { c.base = c.proc = null; return; }
+  c.base = buildBase(c);
+  rebuildProc(i, false);
+}
+function rebuildProc(i, quick) {
+  const c = cells[i];
+  clearTimeout(fullT[i]); fullT[i] = 0;
+  if (!c.base) { c.proc = null; return; }
+  if (adjZero(c.adj)) { c.proc = c.base; return; }
+  c.proc = processAdj(c.base, c.adj, quick ? 1100 : 0);
+  if (quick) fullT[i] = setTimeout(() => { fullT[i] = 0; rebuildProc(i, false); invalidate(); }, 280);
+}
+function flushFull() { for (let i = 0; i < 2; i++) if (fullT[i]) rebuildProc(i, false); }
+function setCellImage(i, canvas, name) {
+  const c = cells[i];
+  Object.assign(c, { img: canvas, name: name || '붙여넣은 이미지', zoom: 1, fx: 0.5, fy: 0.5, rot: 0, flip: false, adj: newAdj() });
+  rebuildBase(i);
+}
+function clearCell(i) { Object.assign(cells[i], newCell()); }
+
+/* ═════════════ 배치 계산 (단위: 기준 변 1000) ═════════════ */
+function rv(key, cu) {
+  if (key === 'free') { const a = +cu[0] || 1, b = +cu[1] || 1; return clamp(a / b, 0.1, 10); }
+  const [a, b] = key.split(':').map(Number); return a / b;
+}
+function imgR(i) { const c = cells[i]; return c.base ? c.base.width / c.base.height : null; }
+function layoutU() {
+  const B = 1000, g = +S.gap, p = +S.pad, h = S.dir === 'h', def = h ? 0.75 : 4 / 3;
+  let a, rects, W, H;
+  if (S.mode === 'orig') a = [imgR(0) || imgR(1) || def, imgR(1) || imgR(0) || def];
+  else if (S.mode === 'follow') { const r = imgR(S.ref) || imgR(1 - S.ref) || def; a = [r, r]; }
+  else if (S.mode === 'cell') a = [0, 1].map(i => S.cellRatio[i] === 'orig' ? (imgR(i) || def) : rv(S.cellRatio[i], S.cellCustom[i]));
+  if (S.mode === 'total') {
+    const R = rv(S.ratio, S.custom), sp = S.split / 100;
+    if (h) { const av = Math.max(80, R * (B + 2 * p) - g - 2 * p), w0 = av * sp; rects = [[p, p, w0, B], [p + w0 + g, p, av - w0, B]]; W = av + g + 2 * p; H = B + 2 * p; }
+    else { const av = Math.max(80, (B + 2 * p) / R - g - 2 * p), h0 = av * sp; rects = [[p, p, B, h0], [p, p + h0 + g, B, av - h0]]; W = B + 2 * p; H = av + g + 2 * p; }
+  } else if (h) { const w0 = a[0] * B, w1 = a[1] * B; rects = [[p, p, w0, B], [p + w0 + g, p, w1, B]]; W = w0 + w1 + g + 2 * p; H = B + 2 * p; }
+  else { const h0 = B / a[0], h1 = B / a[1]; rects = [[p, p, B, h0], [p, p + h0 + g, B, h1]]; W = B + 2 * p; H = h0 + h1 + g + 2 * p; }
+  return { W, H, rects };
+}
+/* 원본 화질을 최대한 살리는 저장 크기 (긴 변 1200~4096px) */
+function computeOut(L) {
+  let k = 0;
+  L.rects.forEach((r, i) => { const c = cells[i]; if (!c.base) return; const sc = Math.max(r[2] / c.base.width, r[3] / c.base.height); k = Math.max(k, 1 / sc); });
+  const m = Math.max(L.W, L.H);
+  if (!k) k = 1600 / m;
+  k = clamp(k, 1200 / m, 4096 / m);
+  return { k, w: Math.round(L.W * k), h: Math.round(L.H * k) };
+}
+/* 칸 안에서 보이는 영역 — 항상 칸을 꽉 채움 (여백 생기지 않음) */
+function cellView(c, cw, ch) {
+  const bw = c.base.width, bh = c.base.height, sc = Math.max(cw / bw, ch / bh) * c.zoom, vw = cw / sc, vh = ch / sc;
+  return { bw, bh, sc, vw, vh, sx: (bw - vw) * c.fx, sy: (bh - vh) * c.fy };
+}
+
+/* ═════════════ 그리기 ═════════════ */
+function rrPath(g, x, y, w, h, r) {
+  r = Math.max(0, Math.min(r, w / 2, h / 2)); g.beginPath();
+  if (!r) { g.rect(x, y, w, h); return; }
+  g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath();
+}
+function pxRect(r, k) {
+  const x0 = Math.round(r[0] * k), y0 = Math.round(r[1] * k), x1 = Math.round((r[0] + r[2]) * k), y1 = Math.round((r[1] + r[3]) * k);
+  return [x0, y0, x1 - x0, y1 - y0];
+}
+function drawPlaceholder(g, i, x, y, w, h) {
+  g.save();
+  g.beginPath(); g.rect(x, y, w, h); g.clip();
+  g.fillStyle = '#EEF0F3'; g.fillRect(x, y, w, h);
+  const st = Math.max(10, Math.min(w, h) * 0.035);
+  g.strokeStyle = 'rgba(14,15,18,0.045)'; g.lineWidth = st * 0.5;
+  for (let t = -h; t < w + h; t += st * 2) { g.beginPath(); g.moveTo(x + t, y); g.lineTo(x + t - h, y + h); g.stroke(); }
+  const m = Math.max(4, Math.min(w, h) * 0.025), lw = Math.max(1.5, Math.min(w, h) * 0.005);
+  g.setLineDash([lw * 5, lw * 4]); g.strokeStyle = 'rgba(14,15,18,0.28)'; g.lineWidth = lw;
+  rrPath(g, x + m, y + m, w - m * 2, h - m * 2, m * 1.5); g.stroke(); g.setLineDash([]);
+  const fs = Math.max(11, Math.min(w, h) * 0.055), cx = x + w / 2, cy = y + h / 2;
+  g.fillStyle = '#0E0F12'; g.beginPath(); g.arc(cx, cy - fs * 1.4, fs * 1.05, 0, TAU); g.fill();
+  g.fillStyle = '#fff'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.font = `800 ${fs * 1.05}px Pretendard, sans-serif`; g.fillText(String(i + 1), cx, cy - fs * 1.36);
+  g.fillStyle = '#0E0F12'; g.font = `800 ${fs * 0.82}px Pretendard, sans-serif`; g.fillText('비어 있는 칸', cx, cy + fs * 0.35);
+  g.fillStyle = 'rgba(14,15,18,0.5)'; g.font = `600 ${fs * 0.5}px Pretendard, sans-serif`; g.fillText('클릭 · 끌어다 놓기 · Ctrl+V', cx, cy + fs * 1.25);
+  g.restore();
+}
+function stDims(st) { const m = Math.min(LAY.W, LAY.H), w = st.w * m; return { w, h: w * st.src.height / st.src.width }; }
+/* 스티커 한 장 = 테두리 + 이미지 (투명 PNG는 모양 따라 테두리) */
+function stickerComp(st, wp, hp, bp) {
+  const key = [wp, hp, bp, st.color, st.radius, st.src._id].join('|');
+  if (st._ck === key) return st._cv;
+  const shape = mk(wp, hp), sg = shape.getContext('2d'), r = st.radius / 100 * Math.min(wp, hp);
+  sg.imageSmoothingQuality = 'high';
+  if (r > 0) { rrPath(sg, 0, 0, wp, hp, r); sg.clip(); }
+  sg.drawImage(st.src, 0, 0, wp, hp);
+  const out = mk(wp + bp * 2, hp + bp * 2), g = out.getContext('2d');
+  if (bp > 0) {
+    if (st.alpha) {
+      const m = mk(wp, hp), mg = m.getContext('2d');
+      mg.drawImage(shape, 0, 0); mg.globalCompositeOperation = 'source-in'; mg.fillStyle = st.color; mg.fillRect(0, 0, wp, hp);
+      const N = clamp(Math.ceil(TAU * bp / 1.2), 16, 400);
+      for (const f of [1, 0.75, 0.5, 0.25]) {
+        const rr = bp * f, n = Math.max(12, Math.ceil(N * f));
+        for (let a = 0; a < n; a++) { const t = a / n * TAU; g.drawImage(m, bp + Math.cos(t) * rr, bp + Math.sin(t) * rr); }
+      }
+    } else {
+      g.fillStyle = st.color; rrPath(g, 0, 0, out.width, out.height, r > 0 ? r + bp : 0); g.fill();
+    }
+  }
+  g.drawImage(shape, bp, bp);
+  st._ck = key; st._cv = out;
+  return out;
+}
+function drawSticker(g, st, k) {
+  const d = stDims(st), wp = Math.max(2, Math.round(d.w * k)), hp = Math.max(2, Math.round(d.h * k)), bp = Math.round(st.border * k);
+  const comp = stickerComp(st, wp, hp, bp);
+  g.save();
+  g.translate(st.x * LAY.W * k, st.y * LAY.H * k); g.rotate(st.rot);
+  if (st.shadow) {
+    const s = Math.max(wp, hp);
+    g.shadowColor = 'rgba(14,15,18,0.32)'; g.shadowBlur = s * 0.06; g.shadowOffsetY = s * 0.025;
+  }
+  g.drawImage(comp, -comp.width / 2, -comp.height / 2);
+  g.restore();
+}
+function drawAll(g, k, preview) {
+  const W = Math.round(LAY.W * k), H = Math.round(LAY.H * k);
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  g.globalAlpha = 1; g.globalCompositeOperation = 'source-over';
+  g.fillStyle = S.frame; g.fillRect(0, 0, W, H);
+  LAY.rects.forEach((r, i) => {
+    const [x, y, w, h] = pxRect(r, k); if (w < 1 || h < 1) return;
+    const c = cells[i];
+    if (c.base && c.proc) {
+      const v = cellView(c, w, h), q = c.proc.width / v.bw;
+      g.imageSmoothingEnabled = true; g.imageSmoothingQuality = 'high';
+      g.drawImage(c.proc, v.sx * q, v.sy * q, v.vw * q, v.vh * q, x, y, w, h);
+    } else if (preview) drawPlaceholder(g, i, x, y, w, h);
+  });
+  for (const st of stickers) drawSticker(g, st, k);
+}
+
+/* ═════════════ 미리보기 보기 방식 ═════════════ */
+const view = { mode: 'fit', pct: 100 };
+const ZOOM_STEPS = [10, 15, 20, 25, 33, 50, 67, 75, 100, 125, 150, 200, 300, 400];
+function applyView() {
+  const outW = OUT.w, outH = OUT.h, zoomed = view.mode !== 'fit';
+  stageEl.classList.toggle('zoomed', zoomed);
+  const cs = getComputedStyle(stageEl);
+  const padX = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight), padY = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+  let cssW;
+  if (view.mode === 'fit') {
+    const hint = $('hint'), hh = hint.offsetHeight + 14;
+    const aw = stageEl.clientWidth - padX, ah = stageEl.clientHeight - padY - hh;
+    cssW = Math.min(aw, ah * outW / outH);
+  } else if (view.mode === 'width') {
+    cssW = stageEl.clientWidth - padX - 12;
+  } else cssW = outW * view.pct / 100;
+  cssW = Math.max(40, cssW);
+  const cssH = cssW * outH / outW;
+  cv.style.width = cssW + 'px'; cv.style.height = cssH + 'px';
+  cc.style.width = cssW + 'px'; cc.style.height = cssH + 'px';
+  /* 미리보기 해상도: 화면 크기 × 화면 배율, 최대 저장 크기 · 긴 변 3000px */
+  const dpr = window.devicePixelRatio || 1;
+  let pw = Math.min(outW, Math.ceil(cssW * dpr));
+  pw = Math.min(pw, Math.round(3000 * outW / Math.max(outW, outH)));
+  PK = pw / LAY.W;
+  const W = Math.round(LAY.W * PK), H = Math.round(LAY.H * PK);
+  if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; }
+  document.querySelectorAll('#viewBar [data-view]').forEach(b => b.classList.toggle('on', b.dataset.view === view.mode));
+  $('viewPct').textContent = Math.round(cssW / outW * 100) + '%';
+}
+function zoomTo(pct, clientX, clientY) {
+  const before = cv.getBoundingClientRect(), sr = stageEl.getBoundingClientRect();
+  const ax = clientX ?? (sr.left + sr.width / 2), ay = clientY ?? (sr.top + sr.height / 2);
+  const fx = before.width ? (ax - before.left) / before.width : 0.5, fy = before.height ? (ay - before.top) / before.height : 0.5;
+  view.mode = 'pct'; view.pct = clamp(pct, ZOOM_STEPS[0], ZOOM_STEPS[ZOOM_STEPS.length - 1]);
+  refreshNow();
+  const after = cv.getBoundingClientRect();
+  stageEl.scrollLeft += (after.left + fx * after.width) - ax;
+  stageEl.scrollTop += (after.top + fy * after.height) - ay;
+  updateOverlay();
+}
+function stepZoom(dir, x, y) {
+  const cur = cv.getBoundingClientRect().width / OUT.w * 100;
+  const next = dir > 0 ? (ZOOM_STEPS.find(z => z > cur + 0.5) ?? ZOOM_STEPS[ZOOM_STEPS.length - 1]) : ([...ZOOM_STEPS].reverse().find(z => z < cur - 0.5) ?? ZOOM_STEPS[0]);
+  zoomTo(next, x, y);
+}
+$('viewBar').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.view) { view.mode = b.dataset.view; refreshNow(); stageEl.scrollTop = 0; stageEl.scrollLeft = 0; updateOverlay(); }
+  else if (b.dataset.zoom) stepZoom(b.dataset.zoom === '+' ? 1 : -1);
+});
+stageEl.addEventListener('wheel', e => {
+  if (!(e.ctrlKey || e.metaKey)) return;
+  e.preventDefault(); stepZoom(e.deltaY < 0 ? 1 : -1, e.clientX, e.clientY);
+}, { passive: false });
+window.addEventListener('resize', () => invalidate());
+
+/* ═════════════ 화면 갱신 ═════════════ */
+let rafId = 0;
+function invalidate() { if (rafId) return; rafId = requestAnimationFrame(() => { rafId = 0; refreshNow(); }); }
+function refreshNow() {
+  if (rafId) { cancelAnimationFrame(rafId); rafId = 0; }
+  LAY = layoutU(); OUT = computeOut(LAY);
+  applyView();
+  drawAll(ctx, PK, true);
+  updateOverlay();
+  $('outSize').textContent = `${OUT.w} × ${OUT.h} px`;
+}
+
+/* ═════════════ 미리보기 위 표시 ═════════════ */
+const stBox = $('stBox'), cellSel = $('cellSel'), gV = $('gV'), gH = $('gH');
+function curSt() { return stickers.find(s => s.id === selId) || null; }
+function updateOverlay() {
+  if (!LAY) return;
+  const cs = cv.clientWidth / LAY.W;
+  const r = LAY.rects[selCell];
+  cellSel.style.display = selId ? 'none' : 'block';
+  cellSel.style.left = r[0] * cs + 'px'; cellSel.style.top = r[1] * cs + 'px';
+  cellSel.style.width = r[2] * cs + 'px'; cellSel.style.height = r[3] * cs + 'px';
+  cellSel.firstElementChild.textContent = `${selCell + 1}번 편집 중`;
+  const st = curSt();
+  if (!st) { stBox.style.display = 'none'; return; }
+  const d = stDims(st), w = (d.w + 2 * st.border) * cs, h = (d.h + 2 * st.border) * cs;
+  const cx = st.x * LAY.W * cs, cy = st.y * LAY.H * cs;
+  Object.assign(stBox.style, { display: 'block', left: (cx - w / 2) + 'px', top: (cy - h / 2) + 'px', width: w + 'px', height: h + 'px', transform: `rotate(${st.rot}rad)` });
+  stBox.classList.toggle('locked', !!st.locked);
+}
+
+/* ═════════════ 되돌리기 (Ctrl+Z) ═════════════ */
+const HIST = []; let hIdx = -1;
+function snapshot() {
+  return {
+    S: JSON.parse(JSON.stringify(S)),
+    cells: cells.map(c => ({ img: c.img, name: c.name, zoom: c.zoom, fx: c.fx, fy: c.fy, rot: c.rot, flip: c.flip, adj: { ...c.adj } })),
+    stickers: stickers.map(s => { const o = { ...s }; delete o._ck; delete o._cv; return o; }),
+    selId
+  };
+}
+function sig(s) {
+  return JSON.stringify({ S: s.S, c: s.cells.map(c => ({ ...c, img: c.img ? c.img._id : 0 })), st: s.stickers.map(o => ({ ...o, src: o.src._id })) });
+}
+function commit() {
+  const s = snapshot(), k = sig(s);
+  if (hIdx >= 0 && HIST[hIdx].k === k) return;
+  HIST.splice(hIdx + 1); HIST.push({ s, k });
+  if (HIST.length > 100) HIST.shift();
+  hIdx = HIST.length - 1; syncUndo();
+  scheduleSave();
+}
+function restore(s) {
+  Object.keys(S).forEach(k => delete S[k]);
+  Object.assign(S, JSON.parse(JSON.stringify(s.S)));
+  s.cells.forEach((o, i) => {
+    const c = cells[i];
+    const needBase = c.img !== o.img || c.rot !== o.rot || c.flip !== o.flip;
+    const needAdj = needBase || JSON.stringify(c.adj) !== JSON.stringify(o.adj);
+    Object.assign(c, o, { adj: { ...o.adj } });
+    if (needBase) rebuildBase(i); else if (needAdj) rebuildProc(i, false);
+  });
+  const old = new Map(stickers.map(x => [x.id, x]));
+  stickers = s.stickers.map(o => { const p = old.get(o.id), n = { ...o }; if (p && p._cv) { n._ck = p._ck; n._cv = p._cv; } return n; });
+  selId = stickers.some(x => x.id === s.selId) ? s.selId : null;
+  syncUI(); refreshNow(); scheduleSave();
+}
+function undo() { if (hIdx <= 0) { setStatus('더 되돌릴 작업이 없습니다.'); return; } hIdx--; restore(HIST[hIdx].s); syncUndo(); setStatus('되돌리기 완료.'); }
+function redo() { if (hIdx >= HIST.length - 1) { setStatus('다시 할 작업이 없습니다.'); return; } hIdx++; restore(HIST[hIdx].s); syncUndo(); setStatus('다시 하기 완료.'); }
+function syncUndo() { $('undoBtn').disabled = hIdx <= 0; $('redoBtn').disabled = hIdx >= HIST.length - 1; }
+$('undoBtn').addEventListener('click', undo);
+$('redoBtn').addEventListener('click', redo);
+let commitT = 0;
+const commitSoon = (ms = 350) => { clearTimeout(commitT); commitT = setTimeout(commit, ms); };
+
+/* ═════════════ UI 동기화 ═════════════ */
+const RATIO_LABEL = { orig: '원본', free: '자유' };
+document.querySelectorAll('.seg[data-list]').forEach(seg => {
+  seg.innerHTML = seg.dataset.list.split(',').map(v => `<button data-val="${v}">${RATIO_LABEL[v] || v}</button>`).join('');
+});
+function segVal(key) {
+  if (key === 'ref') return String(S.ref);
+  if (key === 'cr0') return S.cellRatio[0];
+  if (key === 'cr1') return S.cellRatio[1];
+  if (key === 'selCell') return String(selCell);
+  return S[key];
+}
+function syncSegs() {
+  document.querySelectorAll('.seg[data-key]').forEach(seg => {
+    const v = String(segVal(seg.dataset.key));
+    seg.querySelectorAll('button[data-val]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.val === v)));
+  });
+}
+const paintRange = el => el.style.setProperty('--val', ((el.value - el.min) / (el.max - el.min) * 100) + '%');
+function setRange(id, v, valId, txt) { const el = $(id); el.value = v; paintRange(el); if (valId) $(valId).textContent = txt != null ? txt : v; }
+const signed = v => (v > 0 ? '+' : '') + v;
+const POS = { h: ['왼쪽', '오른쪽'], v: ['위', '아래'] };
+const MODE_NOTE = {
+  orig: '칸마다 이미지 원본 비율 그대로 유지됩니다.',
+  follow: '기준 이미지의 비율을 옆 칸도 똑같이 따라갑니다.',
+  total: '합친 결과물 전체의 비율을 지정합니다.',
+  cell: '칸마다 비율을 따로 지정합니다.'
+};
+function syncLayoutUI() {
+  syncSegs();
+  for (const m of ['follow', 'total', 'cell']) document.querySelectorAll('.when-' + m).forEach(el => el.classList.toggle('hidden', S.mode !== m));
+  $('modeNote').textContent = MODE_NOTE[S.mode];
+  $('freeTotal').classList.toggle('hidden', S.ratio !== 'free');
+  $('freeC0').classList.toggle('hidden', S.cellRatio[0] !== 'free');
+  $('freeC1').classList.toggle('hidden', S.cellRatio[1] !== 'free');
+  $('cW').value = S.custom[0]; $('cH').value = S.custom[1];
+  $('c0W').value = S.cellCustom[0][0]; $('c0H').value = S.cellCustom[0][1];
+  $('c1W').value = S.cellCustom[1][0]; $('c1H').value = S.cellCustom[1][1];
+  setRange('fSplit', S.split, 'vSplit', `${S.split} : ${100 - S.split}`);
+  setRange('fGap', S.gap, 'vGap'); setRange('fPad', S.pad, 'vPad');
+  $('fFrame').value = S.frame.toLowerCase(); $('fFrameHex').value = S.frame.toUpperCase();
+  const p = POS[S.dir];
+  $('swapBtn').textContent = S.dir === 'h' ? '⇄ 순서 변경' : '⇅ 순서 변경';
+  $('cr0Label').textContent = `1번 칸 (${p[0]}) 비율`; $('cr1Label').textContent = `2번 칸 (${p[1]}) 비율`;
+  document.querySelector('.seg[data-key="ref"] button[data-val="0"]').textContent = `1번 칸 (${p[0]}) 비율`;
+  document.querySelector('.seg[data-key="ref"] button[data-val="1"]').textContent = `2번 칸 (${p[1]}) 비율`;
+}
+function drawThumb(canvas, src) {
+  const g = canvas.getContext('2d'), w = canvas.width, h = canvas.height;
+  g.clearRect(0, 0, w, h); if (!src) return;
+  const s = Math.max(w / src.width, h / src.height), dw = src.width * s, dh = src.height * s;
+  g.imageSmoothingQuality = 'high'; g.drawImage(src, (w - dw) / 2, (h - dh) / 2, dw, dh);
+}
+function syncSlots() {
+  const p = POS[S.dir];
+  [0, 1].forEach(i => {
+    const el = $('slot' + i), c = cells[i], empty = !c.base;
+    el.classList.toggle('empty', empty);
+    el.classList.toggle('sel', selCell === i && !selId);
+    el.querySelector('.slot-pos').textContent = p[i];
+    el.querySelector('.slot-tag').textContent = empty ? '비어 있음' : '사용 중';
+    el.querySelector('.slot-name').textContent = empty ? '클릭 · 끌어다 놓기 · Ctrl+V' : c.name;
+    el.querySelector('.slot-ico').style.display = empty ? '' : 'none';
+    const tc = el.querySelector('canvas'); tc.style.display = empty ? 'none' : 'block';
+    drawThumb(tc, c.proc);
+    $('selBtn' + i).textContent = `${i + 1}번 칸 · ${p[i]}${empty ? ' (빈 칸)' : ''}`;
+  });
+}
+function syncCellUI() {
+  const c = cells[selCell], empty = !c.base;
+  $('cellCtl').classList.toggle('off', empty);
+  $('cellEmptyNote').classList.toggle('hidden', !empty);
+  setRange('fZoom', Math.round(c.zoom * 100), 'vZoom', Math.round(c.zoom * 100) + '%');
+  setRange('aB', c.adj.b, 'vB', signed(c.adj.b));
+  setRange('aS', c.adj.s, 'vS', signed(c.adj.s));
+  setRange('aC', c.adj.c, 'vC', signed(c.adj.c));
+  setRange('aT', c.adj.t, 'vT', signed(c.adj.t));
+  $('aG').checked = !!c.adj.g;
+  $('cellFlip').classList.toggle('on', !!c.flip);
+  syncSegs(); syncSlots();
+}
+function syncStickerUI() {
+  const list = $('stList'); list.innerHTML = '';
+  stickers.forEach(st => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'st-thumb' + (st.id === selId ? ' on' : '');
+    b.title = st.locked ? '잠긴 스티커' : '스티커 선택';
+    const t = mk(80, 80), g = t.getContext('2d'), s = Math.min(80 / st.src.width, 80 / st.src.height);
+    g.drawImage(st.src, (80 - st.src.width * s) / 2, (80 - st.src.height * s) / 2, st.src.width * s, st.src.height * s);
+    b.appendChild(t);
+    if (st.locked) { const l = document.createElement('span'); l.className = 'lk'; l.textContent = '🔒'; b.appendChild(l); }
+    b.addEventListener('click', () => selectSticker(st.id === selId ? null : st.id));
+    list.appendChild(b);
+  });
+  $('stEmpty').classList.toggle('hidden', stickers.length > 0);
+  const st = curSt();
+  $('stCtl').classList.toggle('hidden', !st);
+  if (st) {
+    setRange('sB', st.border, 'vSB'); setRange('sR', st.radius, 'vSR');
+    $('sCol').value = st.color.toLowerCase(); $('sColHex').value = st.color.toUpperCase();
+    $('sSh').checked = !!st.shadow;
+    $('stLock').textContent = st.locked ? '🔓 잠금 해제' : '🔒 잠금';
+    $('stLock').classList.toggle('on', !!st.locked);
+  }
+  syncSlots();
+}
+function syncUI() { syncLayoutUI(); syncCellUI(); syncStickerUI(); }
+
+/* ═════════════ 칸 선택 · 스티커 선택 ═════════════ */
+function setSelCell(i) { selCell = i; syncCellUI(); updateOverlay(); }
+function selectSticker(id) { selId = id; syncStickerUI(); updateOverlay(); }
+
+/* ═════════════ 세그먼트 버튼 ═════════════ */
+document.querySelectorAll('.seg[data-key]').forEach(seg => seg.addEventListener('click', e => {
+  const b = e.target.closest('button[data-val]'); if (!b) return;
+  const key = seg.dataset.key, v = b.dataset.val;
+  if (key === 'selCell') { selectSticker(null); setSelCell(+v); return; }
+  if (key === 'ref') S.ref = +v;
+  else if (key === 'cr0') S.cellRatio[0] = v;
+  else if (key === 'cr1') S.cellRatio[1] = v;
+  else S[key] = v;
+  syncLayoutUI(); syncSlots(); invalidate(); commit();
+}));
+
+/* 자유 비율 입력 */
+function bindFree(wId, hId, get) {
+  const on = () => { const arr = get(), w = parseFloat($(wId).value), h = parseFloat($(hId).value); if (w > 0) arr[0] = w; if (h > 0) arr[1] = h; invalidate(); };
+  [wId, hId].forEach(id => { $(id).addEventListener('input', on); $(id).addEventListener('change', () => { on(); syncLayoutUI(); commit(); }); });
+}
+bindFree('cW', 'cH', () => S.custom);
+bindFree('c0W', 'c0H', () => S.cellCustom[0]);
+bindFree('c1W', 'c1H', () => S.cellCustom[1]);
+
+/* 칸 나누기 · 여백 */
+$('fSplit').addEventListener('input', e => { S.split = +e.target.value; $('vSplit').textContent = `${S.split} : ${100 - S.split}`; paintRange(e.target); invalidate(); });
+$('fSplit').addEventListener('change', commit);
+$('splitReset').addEventListener('click', () => { S.split = 50; syncLayoutUI(); invalidate(); commit(); });
+$('fGap').addEventListener('input', e => { S.gap = +e.target.value; $('vGap').textContent = S.gap; paintRange(e.target); invalidate(); });
+$('fGap').addEventListener('change', commit);
+$('fPad').addEventListener('input', e => { S.pad = +e.target.value; $('vPad').textContent = S.pad; paintRange(e.target); invalidate(); });
+$('fPad').addEventListener('change', commit);
+
+/* 색 입력 (피커 + 헥스) */
+function bindColor(pickId, hexId, set) {
+  $(pickId).addEventListener('input', e => { set(e.target.value.toUpperCase()); $(hexId).value = e.target.value.toUpperCase(); invalidate(); });
+  $(pickId).addEventListener('change', commit);
+  $(hexId).addEventListener('input', e => { let v = e.target.value.trim(); if (!v.startsWith('#')) v = '#' + v; if (/^#[0-9A-Fa-f]{6}$/.test(v)) { set(v.toUpperCase()); $(pickId).value = v.toLowerCase(); invalidate(); } });
+  $(hexId).addEventListener('change', e => { let v = e.target.value.trim(); if (!v.startsWith('#')) v = '#' + v; if (/^#[0-9A-Fa-f]{6}$/.test(v)) { e.target.value = v.toUpperCase(); commit(); } else e.target.value = $(pickId).value.toUpperCase(); });
+}
+bindColor('fFrame', 'fFrameHex', v => { S.frame = v; });
+document.querySelectorAll('[data-frame]').forEach(b => b.addEventListener('click', () => { S.frame = b.dataset.frame; syncLayoutUI(); invalidate(); commit(); }));
+bindColor('sCol', 'sColHex', v => { const st = curSt(); if (st) st.color = v; });
+document.querySelectorAll('[data-stcol]').forEach(b => b.addEventListener('click', () => { const st = curSt(); if (!st) return; st.color = b.dataset.stcol; syncStickerUI(); invalidate(); commit(); }));
+
+/* ═════════════ 칸 순서 바꾸기 ═════════════ */
+$('swapBtn').addEventListener('click', () => {
+  [cells[0], cells[1]] = [cells[1], cells[0]];
+  [fullT[0], fullT[1]] = [fullT[1], fullT[0]];
+  S.cellRatio.reverse(); S.cellCustom.reverse();
+  S.ref = 1 - S.ref; S.split = 100 - S.split;
+  selCell = 1 - selCell;
+  syncUI(); invalidate(); commit();
+  setStatus(S.dir === 'h' ? '좌우 순서 변경 완료.' : '위아래 순서 변경 완료.');
+});
+
+/* ═════════════ 칸 파일 넣기 ═════════════ */
+async function loadIntoCell(i, file) {
+  if (!isImg(file)) { setStatus('이미지 파일만 넣을 수 있습니다.'); return false; }
+  try {
+    const c = await fileToCanvas(file, 3200);
+    setCellImage(i, c, file.name || '붙여넣은 이미지');
+    setSelCell(i); selectSticker(null);
+    syncUI(); invalidate(); commit();
+    setStatus(`${i + 1}번 칸에 이미지 적용 완료.`);
+    return true;
+  } catch (e) { setStatus('이 이미지는 열 수 없습니다. jpg · png · webp 파일을 넣어 주세요.'); return false; }
+}
+function pickFile(i) { $('slot' + i).querySelector('input[type=file]').click(); }
+[0, 1].forEach(i => {
+  const el = $('slot' + i), inp = el.querySelector('input[type=file]');
+  el.addEventListener('click', e => { if (e.target.closest('.slot-clear')) return; if (e.target === inp) return; setSelCell(i); selectSticker(null); pickFile(i); });
+  el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pickFile(i); } });
+  inp.addEventListener('click', e => e.stopPropagation());
+  inp.addEventListener('change', e => { const f = e.target.files[0]; e.target.value = ''; if (f) loadIntoCell(i, f); });
+  el.querySelector('.slot-clear').addEventListener('click', e => {
+    e.stopPropagation(); clearCell(i); syncUI(); invalidate(); commit(); setStatus(`${i + 1}번 칸 비우기 완료.`);
+  });
+  el.addEventListener('dragover', e => { e.preventDefault(); e.stopPropagation(); el.classList.add('over'); });
+  el.addEventListener('dragleave', () => el.classList.remove('over'));
+  el.addEventListener('drop', e => {
+    e.preventDefault(); e.stopPropagation(); el.classList.remove('over'); endDragUI();
+    const f = [...e.dataTransfer.files].find(isImg); if (f) loadIntoCell(i, f);
+  });
+});
+
+/* ═════════════ 칸 편집 ═════════════ */
+function zoomCellAt(i, z, u, v) {
+  const c = cells[i], r = LAY.rects[i]; if (!c.base) return;
+  const a = cellView(c, r[2], r[3]);
+  const px = u == null ? r[0] + r[2] / 2 : u, py = v == null ? r[1] + r[3] / 2 : v;
+  const bx = a.sx + (px - r[0]) / a.sc, by = a.sy + (py - r[1]) / a.sc;
+  c.zoom = clamp(z, 1, 5);
+  const b = cellView(c, r[2], r[3]);
+  const sx = bx - (px - r[0]) / b.sc, sy = by - (py - r[1]) / b.sc;
+  c.fx = b.bw - b.vw > 0.5 ? clamp(sx / (b.bw - b.vw), 0, 1) : 0.5;
+  c.fy = b.bh - b.vh > 0.5 ? clamp(sy / (b.bh - b.vh), 0, 1) : 0.5;
+}
+$('fZoom').addEventListener('input', e => { zoomCellAt(selCell, e.target.value / 100); $('vZoom').textContent = e.target.value + '%'; paintRange(e.target); invalidate(); });
+$('fZoom').addEventListener('change', commit);
+$('cellCenter').addEventListener('click', () => { const c = cells[selCell]; c.zoom = 1; c.fx = c.fy = 0.5; syncCellUI(); invalidate(); commit(); });
+$('cellFlip').addEventListener('click', () => { const c = cells[selCell]; if (!c.img) return; c.flip = !c.flip; c.fx = 1 - c.fx; rebuildBase(selCell); syncCellUI(); invalidate(); commit(); });
+function rotCell(d) { const c = cells[selCell]; if (!c.img) return; c.rot = (c.rot + d + 360) % 360; c.fx = c.fy = 0.5; rebuildBase(selCell); syncCellUI(); invalidate(); commit(); }
+$('cellRotL').addEventListener('click', () => rotCell(-90));
+$('cellRotR').addEventListener('click', () => rotCell(90));
+[['aB', 'b', 'vB'], ['aS', 's', 'vS'], ['aC', 'c', 'vC'], ['aT', 't', 'vT']].forEach(([id, key, vid]) => {
+  $(id).addEventListener('input', e => { const c = cells[selCell]; if (!c.base) return; c.adj[key] = +e.target.value; $(vid).textContent = signed(c.adj[key]); paintRange(e.target); rebuildProc(selCell, true); invalidate(); });
+  $(id).addEventListener('change', () => { syncSlots(); commit(); });
+  $(id).addEventListener('dblclick', e => { const c = cells[selCell]; if (!c.base) return; c.adj[key] = 0; setRange(id, 0, vid, '0'); rebuildProc(selCell, false); invalidate(); syncSlots(); commit(); });
+});
+$('aG').addEventListener('change', e => { const c = cells[selCell]; if (!c.base) return; c.adj.g = e.target.checked; rebuildProc(selCell, false); syncSlots(); invalidate(); commit(); });
+$('adjReset').addEventListener('click', () => { const c = cells[selCell]; if (!c.base) return; c.adj = newAdj(); rebuildProc(selCell, false); syncCellUI(); invalidate(); commit(); setStatus(`${selCell + 1}번 칸 보정 초기화 완료.`); });
+
+/* ═════════════ 스티커 ═════════════ */
+async function addStickers(files) {
+  const list = [...files].filter(isImg); if (!list.length) return;
+  let ok = 0, bad = 0, last = null;
+  for (const f of list) {
+    try {
+      const src = await fileToCanvas(f, 2000);
+      const n = stickers.length % 6, ar = src.width / src.height;
+      const st = { id: uid++, src, alpha: hasAlpha(src), x: 0.5 + n * 0.03, y: 0.5 + n * 0.03, w: 0.32 * Math.min(1, ar), rot: 0, border: 0, color: '#FFFFFF', radius: 0, shadow: false, locked: false };
+      stickers.push(st); last = st; ok++;
+    } catch (e) { bad++; }
+  }
+  if (last) selId = last.id;
+  syncStickerUI(); invalidate(); commit();
+  setStatus(ok ? `스티커 ${ok}장 추가 완료.${bad ? ` (열 수 없는 파일 ${bad}개 제외)` : ''}` : '스티커를 넣지 못했습니다.');
+}
+$('stIn').addEventListener('change', e => { const fs = [...e.target.files]; e.target.value = ''; if (fs.length) addStickers(fs); });
+{ const dz = $('stDrop');
+  dz.addEventListener('dragover', e => { e.preventDefault(); e.stopPropagation(); dz.classList.add('over'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('over'));
+  dz.addEventListener('drop', e => { e.preventDefault(); e.stopPropagation(); dz.classList.remove('over'); endDragUI(); addStickers(e.dataTransfer.files); });
+}
+$('sB').addEventListener('input', e => { const st = curSt(); if (!st) return; st.border = +e.target.value; $('vSB').textContent = st.border; paintRange(e.target); invalidate(); });
+$('sB').addEventListener('change', commit);
+$('sR').addEventListener('input', e => { const st = curSt(); if (!st) return; st.radius = +e.target.value; $('vSR').textContent = st.radius; paintRange(e.target); invalidate(); });
+$('sR').addEventListener('change', commit);
+$('sSh').addEventListener('change', e => { const st = curSt(); if (!st) return; st.shadow = e.target.checked; invalidate(); commit(); });
+function stAction(act) {
+  const st = curSt(); if (!st) return;
+  const i = stickers.indexOf(st);
+  if (act === 'lock') st.locked = !st.locked;
+  else if (act === 'front') { stickers.splice(i, 1); stickers.push(st); }
+  else if (act === 'back') { stickers.splice(i, 1); stickers.unshift(st); }
+  else if (act === 'dup') { const n = { ...st, id: uid++, x: clamp(st.x + 0.03, 0, 1), y: clamp(st.y + 0.03, 0, 1), locked: false }; delete n._ck; delete n._cv; stickers.splice(i + 1, 0, n); selId = n.id; }
+  else if (act === 'del') { stickers.splice(i, 1); selId = null; }
+  syncStickerUI(); invalidate(); commit();
+  setStatus({ lock: st.locked ? '스티커 잠금.' : '스티커 잠금 해제.', front: '맨 앞으로 이동.', back: '맨 뒤로 이동.', dup: '스티커 복제 완료.', del: '스티커 삭제 완료.' }[act]);
+}
+document.querySelectorAll('[data-st]').forEach(b => b.addEventListener('click', () => stAction(b.dataset.st)));
+$('stDelBtn').addEventListener('click', e => { e.stopPropagation(); stAction('del'); });
+$('stDelBtn').addEventListener('pointerdown', e => e.stopPropagation());
+
+/* ═════════════ 미리보기 조작 ═════════════ */
+function toU(ev) { const rc = cv.getBoundingClientRect(); return [(ev.clientX - rc.left) / rc.width * LAY.W, (ev.clientY - rc.top) / rc.height * LAY.H]; }
+function hitCell(u, v) { return LAY.rects.findIndex(r => u >= r[0] && u <= r[0] + r[2] && v >= r[1] && v <= r[1] + r[3]); }
+function hitSticker(u, v, withLocked) {
+  for (let i = stickers.length - 1; i >= 0; i--) {
+    const st = stickers[i]; if (st.locked && !withLocked) continue;
+    const d = stDims(st), dx = u - st.x * LAY.W, dy = v - st.y * LAY.H, co = Math.cos(-st.rot), si = Math.sin(-st.rot);
+    const lx = dx * co - dy * si, ly = dx * si + dy * co;
+    if (Math.abs(lx) <= d.w / 2 + st.border && Math.abs(ly) <= d.h / 2 + st.border) return st;
+  }
+  return null;
+}
+/* 자석: 전체 가운데 · 칸 경계 · 칸 가운데 */
+function snapTargets() {
+  const [a, b] = LAY.rects, xs = [LAY.W / 2], ys = [LAY.H / 2];
+  if (S.dir === 'h') { xs.push(a[0] + a[2] + S.gap / 2, a[0] + a[2] / 2, b[0] + b[2] / 2); }
+  else { ys.push(a[1] + a[3] + S.gap / 2, a[1] + a[3] / 2, b[1] + b[3] / 2); }
+  return { xs, ys };
+}
+function showGuide(el, vert, val) {
+  if (val == null) { el.style.display = 'none'; return; }
+  const cs = cv.clientWidth / LAY.W; el.style.display = 'block';
+  if (vert) el.style.left = val * cs + 'px'; else el.style.top = val * cs + 'px';
+}
+let drag = null, wheelT = 0;
+cc.addEventListener('pointerdown', ev => {
+  if (ev.button > 0 || !LAY) return;
+  if (ev.target.closest('.st-handle,.st-rotate,.st-del')) return;
+  const [u, v] = toU(ev);
+  const st = hitSticker(u, v, false);
+  if (st) {
+    if (selId !== st.id) selectSticker(st.id);
+    drag = { type: 'st', st, u0: u, v0: v, x0: st.x, y0: st.y, moved: false };
+  } else {
+    const i = hitCell(u, v);
+    if (selId !== null) selectSticker(null);
+    if (i < 0) return;
+    if (selCell !== i) setSelCell(i); else updateOverlay();
+    drag = { type: 'cell', i, u, v, sx: ev.clientX, sy: ev.clientY, moved: false, empty: !cells[i].base };
+  }
+  cc.setPointerCapture(ev.pointerId); ev.preventDefault();
+});
+cc.addEventListener('pointermove', ev => {
+  if (!LAY) return;
+  const [u, v] = toU(ev);
+  if (!drag) {
+    const st = hitSticker(u, v, false), i = st ? -1 : hitCell(u, v);
+    cc.style.cursor = st ? 'move' : i < 0 ? '' : cells[i].base ? 'grab' : 'pointer';
+    return;
+  }
+  if (drag.type === 'st') {
+    const st = drag.st; if (st.locked) return;
+    let cx = drag.x0 * LAY.W + (u - drag.u0), cy = drag.y0 * LAY.H + (v - drag.v0);
+    let gx = null, gy = null;
+    if (!ev.altKey) {
+      const thr = 8 / (cv.clientWidth / LAY.W), T = snapTargets();
+      let bx = thr; for (const x of T.xs) { const d = Math.abs(cx - x); if (d < bx) { bx = d; gx = x; } }
+      let by = thr; for (const y of T.ys) { const d = Math.abs(cy - y); if (d < by) { by = d; gy = y; } }
+      if (gx != null) cx = gx; if (gy != null) cy = gy;
+    }
+    showGuide(gV, true, gx); showGuide(gH, false, gy);
+    st.x = cx / LAY.W; st.y = cy / LAY.H; drag.moved = true;
+    invalidate();
+  } else {
+    if (Math.hypot(ev.clientX - drag.sx, ev.clientY - drag.sy) > 3) drag.moved = true;
+    const c = cells[drag.i]; if (!c.base) return;
+    cc.style.cursor = 'grabbing';
+    const r = LAY.rects[drag.i], a = cellView(c, r[2], r[3]);
+    const du = u - drag.u, dv = v - drag.v; drag.u = u; drag.v = v;
+    if (a.bw - a.vw > 0.5) c.fx = clamp(c.fx - (du / a.sc) / (a.bw - a.vw), 0, 1);
+    if (a.bh - a.vh > 0.5) c.fy = clamp(c.fy - (dv / a.sc) / (a.bh - a.vh), 0, 1);
+    invalidate();
+  }
+});
+function endDrag() {
+  if (!drag) return;
+  const d = drag; drag = null;
+  showGuide(gV, true, null); showGuide(gH, false, null);
+  cc.style.cursor = '';
+  if (d.type === 'cell' && d.empty && !d.moved) { pickFile(d.i); return; }
+  if (d.moved) commit();
+}
+cc.addEventListener('pointerup', endDrag);
+cc.addEventListener('pointercancel', endDrag);
+cc.addEventListener('wheel', ev => {
+  if (ev.ctrlKey || ev.metaKey || !LAY) return;
+  const [u, v] = toU(ev), i = hitCell(u, v);
+  if (i < 0 || !cells[i].base) return;
+  ev.preventDefault();
+  if (selCell !== i) setSelCell(i);
+  zoomCellAt(i, cells[i].zoom * Math.exp(-ev.deltaY * 0.0015), u, v);
+  setRange('fZoom', Math.round(cells[i].zoom * 100), 'vZoom', Math.round(cells[i].zoom * 100) + '%');
+  invalidate(); commitSoon(400);
+}, { passive: false });
+
+/* 스티커 크기 · 회전 손잡이 */
+let hd = null;
+stBox.querySelectorAll('.st-handle, .st-rotate').forEach(h => h.addEventListener('pointerdown', ev => {
+  const st = curSt(); if (!st || st.locked) return;
+  ev.stopPropagation(); ev.preventDefault();
+  const [u, v] = toU(ev), cx = st.x * LAY.W, cy = st.y * LAY.H;
+  if (h.dataset.h === 'rot') { hd = { type: 'rot', st, cx, cy, a0: Math.atan2(v - cy, u - cx), r0: st.rot }; document.body.classList.add('st-rotating'); }
+  else hd = { type: 'size', st, cx, cy, d0: Math.hypot(u - cx, v - cy) || 1, w0: st.w };
+  h.setPointerCapture(ev.pointerId);
+  const move = e => {
+    if (!hd) return;
+    const [uu, vv] = toU(e);
+    if (hd.type === 'rot') {
+      let r = hd.r0 + Math.atan2(vv - hd.cy, uu - hd.cx) - hd.a0;
+      if (e.shiftKey) { const s = Math.PI / 12; r = Math.round(r / s) * s; }
+      else { const s = Math.PI / 2, n = Math.round(r / s) * s; if (Math.abs(r - n) < 0.04) r = n; }
+      hd.st.rot = r;
+    } else hd.st.w = clamp(hd.w0 * Math.hypot(uu - hd.cx, vv - hd.cy) / hd.d0, 0.02, 4);
+    invalidate();
+  };
+  const up = () => { h.removeEventListener('pointermove', move); h.removeEventListener('pointerup', up); h.removeEventListener('pointercancel', up); document.body.classList.remove('st-rotating'); hd = null; commit(); };
+  h.addEventListener('pointermove', move); h.addEventListener('pointerup', up); h.addEventListener('pointercancel', up);
+}));
+
+/* ═════════════ 붙여넣기 · 끌어다 놓기 선택창 ═════════════ */
+const PM = { files: null, target: 0, url: '' };
+const isMac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
+function openPaste(files, source, prefer) {
+  files = files.filter(isImg); if (!files.length) return;
+  PM.files = files;
+  if (PM.url) URL.revokeObjectURL(PM.url);
+  PM.url = URL.createObjectURL(files[0]);
+  const prev = $('pPrev'); prev.innerHTML = ''; const im = new Image(); im.src = PM.url; prev.appendChild(im);
+  im.onload = () => { $('pMetaR').textContent = `${im.naturalWidth} × ${im.naturalHeight}`; };
+  $('pMetaR').textContent = '';
+  $('pMetaL').textContent = files.length > 1 ? `이미지 ${files.length}장` : (source === 'drop' ? '끌어다 놓은 이미지' : '붙여넣은 이미지');
+  $('pChip').textContent = files.length > 1 ? `${files.length}장` : source === 'drop' ? '끌어다 놓기' : (isMac ? '⌘ + V' : 'Ctrl + V');
+  const firstEmpty = [0, 1].find(i => !cells[i].base);
+  const rec = firstEmpty != null ? firstEmpty : 'st';
+  const p = POS[S.dir];
+  [0, 1].forEach(i => {
+    const t = document.querySelector(`.paste-tile[data-t="${i}"]`), empty = !cells[i].base;
+    t.querySelector('.pt-name').textContent = `${i + 1}번 칸 · ${p[i]}`;
+    const tag = t.querySelector('.ptag.st'); tag.className = 'ptag st ' + (empty ? 'empty' : 'full'); tag.textContent = empty ? '비어 있음' : '사용 중';
+    t.querySelector('.paste-tile-desc').textContent = empty ? '비어 있는 칸' : `사용 중인 이미지 교체`;
+    const ico = t.querySelector('.paste-tile-icon'); ico.innerHTML = '';
+    if (empty) ico.innerHTML = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="3 3"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/></svg>`;
+    else { const tc = mk(84, 84); drawThumb(tc, cells[i].proc); tc.className = 'paste-tile-thumb'; ico.appendChild(tc); }
+  });
+  document.querySelectorAll('.paste-tile').forEach(t => t.querySelector('.ptag.rec').classList.toggle('hidden', t.dataset.t !== String(rec)));
+  setPasteTarget(prefer != null ? prefer : rec);
+  const n = files.length;
+  $('pNotice').classList.toggle('show', n > 1);
+  $('pNoticeText').textContent = n > 1 ? `이미지 ${n}장 — 칸을 고르면 그 칸부터 차례로 채웁니다${n > 2 ? ' (3장째부터는 스티커로 추가)' : ''}. 스티커를 고르면 전부 스티커로 추가.` : '';
+  $('paste-modal').classList.add('open');
+  setTimeout(() => $('pApply').focus(), 30);
+}
+function setPasteTarget(t) {
+  PM.target = t;
+  document.querySelectorAll('.paste-tile').forEach(el => el.classList.toggle('on', el.dataset.t === String(t)));
+}
+function closePaste() { $('paste-modal').classList.remove('open'); PM.files = null; }
+async function applyPaste() {
+  const files = PM.files, t = PM.target; closePaste(); if (!files) return;
+  if (t === 'st') { await addStickers(files); return; }
+  const order = [t, 1 - t];
+  await loadIntoCell(order[0], files[0]);
+  if (files[1]) await loadIntoCell(order[1], files[1]);
+  if (files.length > 2) await addStickers(files.slice(2));
+}
+document.querySelectorAll('.paste-tile').forEach(el => {
+  el.addEventListener('click', () => setPasteTarget(el.dataset.t === 'st' ? 'st' : +el.dataset.t));
+  el.addEventListener('dblclick', () => { setPasteTarget(el.dataset.t === 'st' ? 'st' : +el.dataset.t); applyPaste(); });
+});
+$('pApply').addEventListener('click', applyPaste);
+$('pCancel').addEventListener('click', closePaste);
+$('pClose').addEventListener('click', closePaste);
+$('paste-modal').addEventListener('pointerdown', e => { if (e.target.id === 'paste-modal') closePaste(); });
+
+document.addEventListener('paste', e => {
+  const items = [...(e.clipboardData && e.clipboardData.items || [])];
+  const files = items.filter(it => it.kind === 'file' && it.type.startsWith('image/')).map(it => it.getAsFile()).filter(Boolean);
+  if (!files.length || restorePending) return;
+  e.preventDefault(); openPaste(files, 'paste', null);
+});
+
+/* 화면 아무 곳에 끌어다 놓기 */
+let dragDepth = 0;
+function endDragUI() { dragDepth = 0; document.body.classList.remove('dragging'); }
+document.addEventListener('dragenter', e => { if (![...(e.dataTransfer && e.dataTransfer.types || [])].includes('Files')) return; e.preventDefault(); dragDepth++; document.body.classList.add('dragging'); });
+document.addEventListener('dragleave', () => { dragDepth = Math.max(0, dragDepth - 1); if (!dragDepth) document.body.classList.remove('dragging'); });
+document.addEventListener('dragover', e => e.preventDefault());
+document.addEventListener('drop', e => {
+  e.preventDefault(); endDragUI();
+  if (restorePending) return;
+  const files = [...e.dataTransfer.files].filter(isImg); if (!files.length) return;
+  let prefer = null;
+  if (LAY && cc.contains(e.target)) { const [u, v] = toU(e), i = hitCell(u, v); if (i >= 0) prefer = i; }
+  openPaste(files, 'drop', prefer);
+});
+
+/* ═════════════ 단축키 ═════════════ */
+document.addEventListener('keydown', e => {
+  if (restorePending) {
+    if (e.key === 'Enter') { e.preventDefault(); $('btnRestoreConfirm').click(); }
+    else if (e.key === 'Escape') { e.preventDefault(); $('btnRestoreCancel').click(); }
+    return;
+  }
+  const modalOpen = $('paste-modal').classList.contains('open');
+  if (modalOpen) {
+    if (e.key === 'Escape') { e.preventDefault(); closePaste(); }
+    else if (e.key === 'Enter') { e.preventDefault(); applyPaste(); }
+    else if (e.key === '1' || e.key === '2') setPasteTarget(+e.key - 1);
+    else if (e.key === '3') setPasteTarget('st');
+    return;
+  }
+  const t = e.target, typing = t && (t.tagName === 'TEXTAREA' || (t.tagName === 'INPUT' && /^(text|number|search|email|url)$/i.test(t.type)) || t.isContentEditable);
+  const mod = e.ctrlKey || e.metaKey;
+  if (mod && !typing && (e.key === 'z' || e.key === 'Z')) { e.preventDefault(); e.shiftKey ? redo() : undo(); return; }
+  if (mod && !typing && (e.key === 'y' || e.key === 'Y')) { e.preventDefault(); redo(); return; }
+  if (!typing && (e.key === 'Delete' || e.key === 'Backspace') && curSt() && !curSt().locked) { e.preventDefault(); stAction('del'); return; }
+  if (!typing && e.key === 'Escape' && selId) selectSticker(null);
+});
+
+/* ═════════════ 내보내기 ═════════════ */
+function exportCanvas() {
+  flushFull();
+  const c = mk(OUT.w, OUT.h);
+  drawAll(c.getContext('2d'), OUT.k, false);
+  return c;
+}
+const toBlob = c => new Promise((res, rej) => c.toBlob(b => b ? res(b) : rej(new Error('blob')), 'image/png'));
+let DL;
+async function getDL() {
+  if (DL !== undefined) return DL;
+  if (!(window.claude && typeof window.claude.use === 'function')) return null;
+  try { DL = await window.claude.use('downloads'); } catch (e) { DL = null; }
+  return DL;
+}
+function anchorSave(name, blob) { const u = URL.createObjectURL(blob), a = document.createElement('a'); a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 60000); setStatus('저장 완료 → ' + name); }
+async function saveFile(name, blob) {
+  const dl = await getDL();
+  if (dl) {
+    try { await dl.save({ filename: name, data: blob }); setStatus('저장 완료 → ' + name); }
+    catch (e) { const code = e && e.code; if (code === 'declined') setStatus('저장 취소.'); else if (code === 'rate_limited') setStatus('저장 확인 창이 이미 열려 있습니다. 그 창부터 닫아 주세요.'); else anchorSave(name, blob); }
+    return;
+  }
+  anchorSave(name, blob);
+}
+function fileName() {
+  const d = new Date(), p = n => String(n).padStart(2, '0');
+  return `pairshot_${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}.png`;
+}
+const noImages = () => !cells[0].base && !cells[1].base && !stickers.length;
+$('saveBtn').addEventListener('click', async () => {
+  if (noImages()) { setStatus('이미지를 먼저 넣어 주세요.'); return; }
+  setStatus('PNG 만드는 중…');
+  try { const blob = await toBlob(exportCanvas()); await saveFile(fileName(), blob); }
+  catch (e) { setStatus('PNG를 만들지 못했습니다. 다시 눌러 주세요.'); }
+  finally { invalidate(); }
+});
+$('copyBtn').addEventListener('click', async () => {
+  if (noImages()) { setStatus('이미지를 먼저 넣어 주세요.'); return; }
+  if (!navigator.clipboard || !window.ClipboardItem) { setStatus('이 브라우저는 이미지 복사를 지원하지 않습니다. 저장 기능을 이용해 주세요.'); return; }
+  setStatus('복사 중…');
+  try {
+    const c = exportCanvas();
+    await navigator.clipboard.write([new ClipboardItem({ 'image/png': toBlob(c) })]);
+    setStatus(`클립보드 복사 완료 (${OUT.w} × ${OUT.h}).`);
+  } catch (e) { setStatus('복사 실패. 브라우저 권한을 확인하거나 저장 기능을 이용해 주세요.'); }
+  finally { invalidate(); }
+});
+
+/* ═════════════ 작업 자동저장 · 복원 ═════════════
+   - 설정값 · 위치: localStorage (가벼움)
+   - 이미지: IndexedDB (용량 넉넉함, 원본 화질 그대로)
+   ════════════════════════════════════════════ */
+const STORAGE_KEY = 'yut_pairshot_state';
+const AUTOSAVE_DB = 'YutPairshotAutosave';
+let autosaveReady = false, restorePending = false, saveTimer = 0, lastImgSig = '';
+let autosaveDBPromise = null;
+function openAutosaveDB() {
+  if (!autosaveDBPromise) {
+    autosaveDBPromise = new Promise((resolve, reject) => {
+      const req = indexedDB.open(AUTOSAVE_DB, 1);
+      req.onupgradeneeded = e => { const db = e.target.result; if (!db.objectStoreNames.contains('images')) db.createObjectStore('images'); };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => { autosaveDBPromise = null; reject(req.error); };
+    });
+  }
+  return autosaveDBPromise;
+}
+async function idbPut(val) {
+  const db = await openAutosaveDB();
+  await new Promise((res, rej) => { const tx = db.transaction('images', 'readwrite'); tx.objectStore('images').put(val, 'current'); tx.oncomplete = res; tx.onerror = () => rej(tx.error); });
+}
+async function idbGet() {
+  try {
+    const db = await openAutosaveDB();
+    return await new Promise(res => { const r = db.transaction('images', 'readonly').objectStore('images').get('current'); r.onsuccess = () => res(r.result || null); r.onerror = () => res(null); });
+  } catch (e) { return null; }
+}
+async function idbClear() {
+  lastImgSig = '';
+  try { const db = await openAutosaveDB(); db.transaction('images', 'readwrite').objectStore('images').delete('current'); } catch (e) {}
+}
+/* 캔버스 → PNG 한 번만 만들고 재사용 */
+function canvasBlob(c) {
+  if (!c._blob) c._blob = new Promise((res, rej) => c.toBlob(b => b ? res(b) : rej(new Error('blob')), 'image/png'));
+  return c._blob;
+}
+function saveNow() {
+  if (!autosaveReady) return;
+  clearTimeout(saveTimer); saveTimer = 0;
+  if (noImages()) {
+    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    idbClear(); return;
+  }
+  // 1) 설정값 → localStorage
+  const data = {
+    v: 1, S, selCell,
+    cells: cells.map(c => ({ has: !!c.img, name: c.name, zoom: c.zoom, fx: c.fx, fy: c.fy, rot: c.rot, flip: c.flip, adj: c.adj })),
+    stickers: stickers.map(({ src, _ck, _cv, ...o }) => o)
+  };
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (e) { console.warn('작업 내용 저장 실패:', e); }
+  // 2) 이미지 → IndexedDB (바뀐 경우에만)
+  const imgSig = cells.map(c => c.img ? c.img._id : 0).join(',') + '|' + stickers.map(s => s.id + ':' + s.src._id).join(',');
+  if (imgSig === lastImgSig) return;
+  lastImgSig = imgSig;
+  Promise.all([
+    Promise.all(cells.map(c => c.img ? canvasBlob(c.img) : null)),
+    Promise.all(stickers.map(async s => ({ id: s.id, blob: await canvasBlob(s.src) })))
+  ]).then(([cb, sb]) => idbPut({ cells: cb, stickers: sb }))
+    .catch(err => { lastImgSig = ''; console.warn('이미지 자동저장 실패:', err); });
+}
+function scheduleSave() { if (!autosaveReady) return; clearTimeout(saveTimer); saveTimer = setTimeout(saveNow, 250); }
+window.addEventListener('pagehide', () => { if (saveTimer) saveNow(); });
+
+async function loadSaved(data, imgs) {
+  // 설정값
+  Object.keys(S).forEach(k => delete S[k]);
+  Object.assign(S, JSON.parse(JSON.stringify(data.S)));
+  // 칸 이미지
+  for (let i = 0; i < 2; i++) {
+    const o = data.cells && data.cells[i], c = cells[i];
+    Object.assign(c, newCell());
+    const blob = imgs && imgs.cells && imgs.cells[i];
+    if (!o || !o.has || !blob) continue;
+    try {
+      c.img = await fileToCanvas(blob, 3200); c.img._blob = Promise.resolve(blob);
+      Object.assign(c, { name: o.name, zoom: o.zoom, fx: o.fx, fy: o.fy, rot: o.rot, flip: o.flip, adj: { ...newAdj(), ...o.adj } });
+      rebuildBase(i);
+    } catch (e) { Object.assign(c, newCell()); }
+  }
+  // 스티커
+  const blobById = new Map(((imgs && imgs.stickers) || []).map(x => [x.id, x.blob]));
+  stickers = [];
+  for (const o of (data.stickers || [])) {
+    const blob = blobById.get(o.id); if (!blob) continue;
+    try {
+      const src = await fileToCanvas(blob, 2000); src._blob = Promise.resolve(blob);
+      stickers.push({ ...o, src });
+      uid = Math.max(uid, o.id + 1);
+    } catch (e) {}
+  }
+  selCell = data.selCell === 1 ? 1 : 0; selId = null;
+  // 되돌리기 기록은 불러온 상태부터 새로 시작
+  HIST.length = 0; hIdx = -1;
+  syncUI(); refreshNow(); commit();
+}
+function initRestore() {
+  let data = null;
+  try { data = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); } catch (e) {}
+  if (!data || !data.S) { autosaveReady = true; return; }
+  restorePending = true;
+  const modal = $('restore-modal');
+  modal.classList.add('open');
+  setTimeout(() => $('btnRestoreConfirm').focus(), 30);
+  const done = () => { modal.classList.remove('open'); restorePending = false; autosaveReady = true; };
+  $('btnRestoreConfirm').onclick = async () => {
+    $('btnRestoreConfirm').disabled = $('btnRestoreCancel').disabled = true;
+    modal.classList.remove('open');
+    setStatus('이전 작업 불러오는 중…');
+    try {
+      const imgs = await idbGet();
+      await loadSaved(data, imgs);
+      setStatus('이전 작업 불러오기 완료.');
+    } catch (e) { setStatus('이전 작업을 불러오지 못했습니다.'); }
+    done(); scheduleSave();
+  };
+  $('btnRestoreCancel').onclick = () => {
+    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    idbClear(); done();
+  };
+}
+
+/* ═════════════ 시작 ═════════════ */
+document.querySelectorAll('.range-row input[type=range]').forEach(el => { paintRange(el); el.addEventListener('input', () => paintRange(el)); });
+syncUI();
+refreshNow();
+commit();
+initRestore();
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => invalidate());
+window.addEventListener('load', () => { getDL(); invalidate(); });
+})();
+</script>
+</body>
+</html>
