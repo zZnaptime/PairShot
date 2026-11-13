@@ -15,6 +15,10 @@
 @font-face{font-family:"Pretendard";font-weight:500;font-display:swap;src:local("Pretendard Medium"),local("Pretendard-Medium"),url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff2/Pretendard-Medium.woff2") format("woff2")}
 @font-face{font-family:"Pretendard";font-weight:600;font-display:swap;src:local("Pretendard SemiBold"),local("Pretendard-SemiBold"),url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff2/Pretendard-SemiBold.woff2") format("woff2")}
 @font-face{font-family:"Pretendard";font-weight:700;font-display:swap;src:local("Pretendard Bold"),local("Pretendard-Bold"),url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff2/Pretendard-Bold.woff2") format("woff2")}
+@font-face{font-family:"PfStardust30";font-weight:400;font-display:swap;src:url("https://cdn.jsdelivr.net/gh/projectnoonnu/2506-1@1.0/PFStardust.woff2") format("woff2")}
+@font-face{font-family:"PfStardust30";font-weight:700;font-display:swap;src:url("https://cdn.jsdelivr.net/gh/projectnoonnu/2506-1@1.0/PFStardustBold.woff2") format("woff2")}
+@font-face{font-family:"PfStardust30S";font-weight:400;font-display:swap;src:url("https://cdn.jsdelivr.net/gh/projectnoonnu/2506-1@1.0/PFStardustS.woff2") format("woff2")}
+@font-face{font-family:"PfStardust30S";font-weight:700;font-display:swap;src:url("https://cdn.jsdelivr.net/gh/projectnoonnu/2506-1@1.0/PFStardustSBold.woff2") format("woff2")}
 @font-face{font-family:"Pretendard";font-weight:800;font-display:swap;src:local("Pretendard ExtraBold"),local("Pretendard-ExtraBold"),url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff2/Pretendard-ExtraBold.woff2") format("woff2")}
 
 /* ═══════════════════════════════════════════════
@@ -56,7 +60,7 @@ button,input,select{font-family:inherit;color:inherit;letter-spacing:inherit}
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.9),0 10px 26px -18px rgba(14,15,18,.35);
 }
 .editor::after{
-  content:"v1.0";position:absolute;top:21px;right:21px;height:26px;padding:0 11px;border-radius:999px;
+  content:"v1.1";position:absolute;top:21px;right:21px;height:26px;padding:0 11px;border-radius:999px;
   font:800 10px/26px 'Pretendard',sans-serif;letter-spacing:-.01em;color:#fff;background:#0E0F12;pointer-events:none;
 }
 .editor-title{display:flex;align-items:center;flex-wrap:wrap;font-size:22px;font-weight:900;letter-spacing:-.06em;color:var(--rx-k);padding:0 4px;gap:6px;row-gap:0}
@@ -212,6 +216,23 @@ button,input,select{font-family:inherit;color:inherit;letter-spacing:inherit}
 .st-thumb.on{box-shadow:0 0 0 2px var(--rx-p)}
 .st-thumb .lk{position:absolute;right:-3px;top:-3px;font-size:9px;background:#fff;border-radius:999px;padding:1px 3px;box-shadow:0 1px 3px rgba(0,0,0,.2)}
 .st-ctl{display:flex;flex-direction:column;gap:11px;padding:13px;border-radius:16px;background:rgba(255,255,255,.5);box-shadow:var(--rx-ring)}
+
+/* ── 라벨 스티커 ── */
+.lb-chip{display:inline-flex;align-items:center;height:20px;padding:0 9px;margin-left:6px;border-radius:999px;background:var(--rx-p);color:#fff;font-size:10.5px;font-weight:800;letter-spacing:-.02em;vertical-align:1px}
+.lb-preview{height:118px;border-radius:16px;display:grid;place-items:center;overflow:hidden;
+  background-color:#F3F4F6;background-image:linear-gradient(45deg,#E9EBEE 25%,transparent 25%,transparent 75%,#E9EBEE 75%),linear-gradient(45deg,#E9EBEE 25%,transparent 25%,transparent 75%,#E9EBEE 75%);
+  background-size:14px 14px;background-position:0 0,7px 7px;box-shadow:inset 0 0 0 1px rgba(14,15,18,.08)}
+.lb-preview canvas{display:block;filter:drop-shadow(0 6px 12px rgba(14,15,18,.14))}
+textarea.text{resize:vertical;min-height:60px;line-height:1.5;font-weight:600;font-family:inherit}
+.lb-2col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sw-row{display:grid;grid-template-columns:repeat(9,1fr);gap:6px}
+.sw-dot{aspect-ratio:1;border:0;border-radius:50%;cursor:pointer;padding:0;box-shadow:inset 0 0 0 1px rgba(14,15,18,.14);transition:transform .15s}
+.sw-dot:hover{transform:scale(1.1)}
+.sw-dot.on{box-shadow:inset 0 0 0 1px rgba(14,15,18,.14),0 0 0 2px #fff,0 0 0 3.5px var(--rx-p)}
+.seg.lb-deco button{font-size:15px;font-family:"Pretendard",-apple-system,"Apple SD Gothic Neo","Segoe UI Symbol",sans-serif}
+.seg[data-lb="font"] button{font-size:12px}
+.add-btn{width:100%;height:40px;border:0;border-radius:999px;background:var(--rx-k);color:#fff;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 10px 20px -12px rgba(14,15,18,.7);transition:background .15s}
+.add-btn:hover{background:var(--rx-p)}
 
 /* ── 저장 · 복사 버튼 ── */
 .save-btn,.copy-btn{width:100%;padding:13px 0;border:none;border-radius:999px;font-size:14px;font-weight:800;letter-spacing:-.03em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s cubic-bezier(.34,1.56,.64,1)}
@@ -643,7 +664,47 @@ body.st-rotating,body.st-rotating *{cursor:grabbing!important}
     <p class="note">✦ 스티커 이동 시 경계에 자동 스냅 (<b>Alt</b>시 해제)<br>✦ 회전 + <b>Shift</b> = 15° 단위 회전</p>
   </section>
 
-  <!-- 06 내보내기 -->
+  <!-- 06 라벨 스티커 -->
+  <section class="panel-card">
+    <div class="panel-card-title">✦ 라벨 텍스트<span class="lb-chip hidden" id="lbEditing">선택한 라벨 편집 중</span></div>
+    <div class="lb-preview" id="lbPrevWrap"><canvas id="lbPrev" width="10" height="10" aria-label="라벨 미리보기"></canvas></div>
+    <button type="button" class="add-btn" id="lbAdd">＋ 라벨 추가</button>
+    <textarea class="text" id="lbText" rows="2" spellcheck="false" placeholder="라벨에 들어갈 문구 (줄바꿈 가능)"></textarea>
+    <div class="field-group"><span class="label-sub">폰트</span>
+      <div class="seg" data-lb="font"><button data-val="pf" style="font-family:PfStardust30">PF스타더스트</button><button data-val="pfs" style="font-family:PfStardust30S">스타더스트 S</button><button data-val="pre" style="font-family:Pretendard">프리텐다드</button></div>
+    </div>
+    <div class="lb-2col">
+      <div class="field-group"><span class="label-sub">굵기</span><div class="seg" data-lb="weight"><button data-val="n">보통</button><button data-val="b">굵게</button></div></div>
+      <div class="field-group"><span class="label-sub">글자 방향</span><div class="seg" data-lb="dir"><button data-val="h">가로</button><button data-val="v">세로</button></div></div>
+    </div>
+    <div class="field-group"><span class="label-sub">배경색</span>
+      <div class="sw-row" id="lbBgRow"></div>
+      <div class="color-row"><div class="color-picker-wrap"><input type="color" id="lbBg" value="#ffffff" aria-label="라벨 배경색 고르기"><input type="text" class="hex-in" id="lbBgHex" value="#FFFFFF" maxlength="7" spellcheck="false" aria-label="라벨 배경색 헥스코드"></div></div>
+    </div>
+    <div class="field-group"><span class="label-sub">글자색</span>
+      <div class="color-row">
+        <div class="color-picker-wrap"><input type="color" id="lbFg" value="#1e1e22" aria-label="라벨 글자색 고르기"><input type="text" class="hex-in" id="lbFgHex" value="#1E1E22" maxlength="7" spellcheck="false" aria-label="라벨 글자색 헥스코드"></div>
+        <button type="button" class="chip-sw" data-lbfg="#1E1E22" style="background:#1E1E22" title="블랙"></button>
+        <button type="button" class="chip-sw" data-lbfg="#FFFFFF" style="background:#FFFFFF" title="화이트"></button>
+      </div>
+    </div>
+    <div class="field-group"><span class="label-sub">무늬</span>
+      <div class="seg" data-lb="pat"><button data-val="none">없음</button><button data-val="check">체크</button><button data-val="stripe">줄무늬</button><button data-val="diag">사선</button><button data-val="dot">도트</button></div>
+    </div>
+    <div class="field-group"><span class="label-sub">안쪽 테두리</span>
+      <div class="seg grid5" data-lb="frame"><button data-val="none">없음</button><button data-val="line">실선</button><button data-val="dash">점선</button><button data-val="round">둥근 선</button><button data-val="double">이중선</button></div>
+    </div>
+    <div class="field-group"><span class="label-sub">장식</span>
+      <div class="seg grid5 lb-deco" data-lb="deco"></div>
+      <div class="seg" data-lb="decoPos"><button data-val="both">양쪽</button><button data-val="before">앞에만</button><button data-val="after">뒤에만</button></div>
+    </div>
+    <div class="field-group"><span class="label-sub">라벨 모양</span>
+      <div class="seg" data-lb="shape"><button data-val="sq">기본</button><button data-val="rd">라운딩</button><button data-val="pill">알약</button></div>
+    </div>
+    <p class="note">✦ 붙인 라벨은 스티커처럼 이동 · 회전 · 크기 조절 가능합니다.<br>✦ 라벨을 선택하면 이 패널에서 바로 수정됩니다.</p>
+  </section>
+
+  <!-- 07 내보내기 -->
   <section class="panel-card">
     <div class="panel-card-title">✦ 내보내기</div>
     <div class="size-chip"><span>저장 크기</span><b id="outSize">—</b></div>
@@ -1296,7 +1357,7 @@ function syncStickerUI() {
   const list = $('stList'); list.innerHTML = '';
   stickers.forEach(st => {
     const b = document.createElement('button'); b.type = 'button'; b.className = 'st-thumb' + (st.id === selId ? ' on' : '');
-    b.title = st.locked ? '잠긴 스티커' : '스티커 선택';
+    b.title = st.locked ? '잠긴 스티커' : st.label ? '라벨 스티커' : '스티커 선택';
     const t = mk(80, 80), g = t.getContext('2d'), s = Math.min(80 / st.src.width, 80 / st.src.height);
     g.drawImage(st.src, (80 - st.src.width * s) / 2, (80 - st.src.height * s) / 2, st.src.width * s, st.src.height * s);
     b.appendChild(t);
@@ -1315,6 +1376,7 @@ function syncStickerUI() {
     $('stLock').classList.toggle('on', !!st.locked);
   }
   syncSlots();
+  if (typeof syncLabelUI === 'function' && $('lbPrev')) syncLabelUI();
 }
 function syncUI() { syncLayoutUI(); syncCellUI(); syncStickerUI(); }
 
@@ -1473,6 +1535,174 @@ function stAction(act) {
 document.querySelectorAll('[data-st]').forEach(b => b.addEventListener('click', () => stAction(b.dataset.st)));
 $('stDelBtn').addEventListener('click', e => { e.stopPropagation(); stAction('del'); });
 $('stDelBtn').addEventListener('pointerdown', e => e.stopPropagation());
+
+
+/* ═════════════ 라벨 스티커 ═════════════ */
+const LB_FONT = { pre: 'Pretendard', pf: 'PfStardust30', pfs: 'PfStardust30S' };
+const LB_BG = ['#FFFFFF', '#FFDDE6', '#FFE6D2', '#FFF3B8', '#E5F6C9', '#D2F2E2', '#D6EBFF', '#E6DEFF', '#EEEFF2'];
+const LB_BG_NAME = ['화이트', '핑크', '피치', '레몬', '라임', '민트', '하늘', '라벤더', '그레이'];
+const LB_DECO = ['none', '♡', '♥', '★', '☆', '♪', '✦', '✧', '☺', '✉'];
+const LB_DEFAULT = { text: '처방 내용: 곁에 둘 것', font: 'pf', weight: 'n', dir: 'h', bg: '#FFFFFF', fg: '#1E1E22', pat: 'none', frame: 'line', deco: 'none', decoPos: 'both', shape: 'sq' };
+let LB = { ...LB_DEFAULT };
+const VS15 = '︎'; // 기호를 이모지가 아닌 글자 모양으로
+function lbFontStr(lb, px) {
+  const w = lb.font === 'pre' ? (lb.weight === 'b' ? 800 : 500) : (lb.weight === 'b' ? 700 : 400);
+  return `${w} ${px}px "${LB_FONT[lb.font] || 'Pretendard'}", "Pretendard", -apple-system, "Apple SD Gothic Neo", sans-serif`;
+}
+function hexA(hex, a) { const n = parseInt(String(hex).replace('#', ''), 16) || 0; return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`; }
+function lbLines(lb) {
+  let lines = String(lb.text || '').replace(/\r/g, '').split('\n');
+  if (lines.every(t => !t.trim())) lines = ['라벨'];
+  const d = lb.deco && lb.deco !== 'none' ? lb.deco + VS15 : '';
+  return lines.map(t => !d ? t : (lb.decoPos !== 'after' ? d + ' ' : '') + t + (lb.decoPos !== 'before' ? ' ' + d : ''));
+}
+function renderLabel(lb) {
+  const F = 96, meas = mk(4, 4).getContext('2d'); meas.font = lbFontStr(lb, F);
+  const lines = lbLines(lb), fr = lb.frame !== 'none';
+  const padA = F * (fr ? 0.62 : 0.5), padB = F * (fr ? 0.44 : 0.32);
+  let W, H, cols, cell, colW, lineH;
+  if (lb.dir === 'v') {
+    cell = F * 1.1; colW = F * 1.34;
+    cols = lines.map(t => [...t]);
+    const colH = c => c.reduce((s, ch) => s + (ch === ' ' ? cell * 0.4 : ch === VS15 ? 0 : cell), 0);
+    const maxH = Math.max(cell, ...cols.map(colH));
+    W = cols.length * colW + padB * 2; H = maxH + padA * 2;
+    cols._h = colH; cols._max = maxH;
+  } else {
+    lineH = F * 1.34;
+    const maxW = Math.max(F, ...lines.map(t => meas.measureText(t).width));
+    W = maxW + padA * 2; H = lines.length * lineH + padB * 2;
+  }
+  W = Math.ceil(W); H = Math.ceil(H);
+  const r = lb.shape === 'pill' ? Math.min(W, H) / 2 : lb.shape === 'rd' ? F * 0.3 : F * 0.05;
+  const c = mk(W, H), g = c.getContext('2d');
+  g.save(); rrPath(g, 0, 0, W, H, r); g.clip();
+  g.fillStyle = lb.bg; g.fillRect(0, 0, W, H);
+  // 무늬
+  const pc = hexA(lb.fg, 0.085); g.fillStyle = pc;
+  if (lb.pat === 'check') { const s = F * 0.3; for (let x = 0; x < W; x += s * 2) g.fillRect(x, 0, s, H); for (let y = 0; y < H; y += s * 2) g.fillRect(0, y, W, s); }
+  else if (lb.pat === 'stripe') { const s = F * 0.17; for (let y = s * 0.6; y < H; y += s * 2) g.fillRect(0, y, W, s * 0.5); }
+  else if (lb.pat === 'diag') { const s2 = F * 0.17; g.save(); g.strokeStyle = pc; g.lineWidth = s2 * 0.55; for (let t = -H; t < W + H; t += s2 * 2) { g.beginPath(); g.moveTo(t, 0); g.lineTo(t + H, H); g.stroke(); } g.restore(); }
+  else if (lb.pat === 'dot') { const st = F * 0.34, rr = F * 0.055; let row = 0; for (let y = st / 2; y < H + st; y += st, row++) for (let x = (row % 2 ? st / 2 : 0); x < W + st; x += st) { g.beginPath(); g.arc(x, y, rr, 0, TAU); g.fill(); } }
+  // 안쪽 테두리
+  if (fr) {
+    const lw = Math.max(2, F * 0.05), ins = F * 0.15 + lw / 2, fw = W - ins * 2, fh = H - ins * 2;
+    const ir = lb.frame === 'round' ? Math.max(r - ins, Math.min(fw, fh) * 0.3) : Math.max(0, r - ins);
+    g.strokeStyle = hexA(lb.fg, 0.85); g.lineWidth = lw; g.lineJoin = 'round';
+    if (lb.frame === 'dash') g.setLineDash([lw * 2.4, lw * 1.8]);
+    if (lb.frame === 'double') {
+      g.lineWidth = lw * 0.6; rrPath(g, ins, ins, fw, fh, ir); g.stroke();
+      const d2 = lw * 1.5; rrPath(g, ins + d2, ins + d2, fw - d2 * 2, fh - d2 * 2, Math.max(0, ir - d2)); g.stroke();
+    } else { rrPath(g, ins, ins, fw, fh, ir); g.stroke(); }
+    g.setLineDash([]);
+  }
+  // 글자
+  g.fillStyle = lb.fg; g.font = lbFontStr(lb, F); g.textAlign = 'center'; g.textBaseline = 'middle';
+  if (lb.dir === 'v') {
+    cols.forEach((col, j) => {
+      const x = W - padB - colW * (j + 0.5);
+      let y = padA + (cols._max - cols._h(col)) / 2;
+      for (let i = 0; i < col.length; i++) {
+        const ch = col[i]; if (ch === VS15) continue;
+        if (ch === ' ') { y += cell * 0.4; continue; }
+        const t = col[i + 1] === VS15 ? ch + VS15 : ch;
+        g.fillText(t, x, y + cell / 2); y += cell;
+      }
+    });
+  } else {
+    lines.forEach((t, i) => g.fillText(t, W / 2, padB + lineH * (i + 0.5) + F * 0.02));
+  }
+  g.restore();
+  c._id = uid++;
+  return c;
+}
+async function ensureLbFont(lb) {
+  if (!document.fonts || !document.fonts.load) return;
+  try { await Promise.race([document.fonts.load(lbFontStr(lb, 96), (lb.text || '') + '가A'), new Promise(r => setTimeout(r, 2500))]); } catch (e) {}
+}
+function curLabel() { const st = curSt(); return st && st.label ? st : null; }
+function drawLbPreview(lb) {
+  const src = renderLabel(lb), wrap = $('lbPrevWrap'), pc = $('lbPrev');
+  const maxW = Math.max(60, wrap.clientWidth * 0.9), maxH = 92;
+  const k = Math.min(maxW / src.width, maxH / src.height, 1);
+  const cw = src.width * k, ch = src.height * k, dpr = window.devicePixelRatio || 1;
+  pc.width = Math.round(cw * dpr); pc.height = Math.round(ch * dpr);
+  pc.style.width = cw + 'px'; pc.style.height = ch + 'px';
+  const g = pc.getContext('2d'); g.imageSmoothingQuality = 'high'; g.drawImage(src, 0, 0, pc.width, pc.height);
+}
+function buildLbChoices() {
+  $('lbBgRow').innerHTML = LB_BG.map((c, i) => `<button type="button" class="sw-dot" data-lbbg="${c}" style="background:${c}" title="${LB_BG_NAME[i]}" aria-label="${LB_BG_NAME[i]}"></button>`).join('');
+  document.querySelector('.seg[data-lb="deco"]').innerHTML = LB_DECO.map(d => `<button data-val="${d}">${d === 'none' ? '없음' : d + VS15}</button>`).join('');
+}
+function syncLabelUI() {
+  const st = curLabel();
+  if (st) LB = { ...LB_DEFAULT, ...st.label };
+  $('lbEditing').classList.toggle('hidden', !st);
+  $('lbAdd').textContent = st ? '＋ 현재 라벨 복제' : '＋ 라벨 추가';
+  const ta = $('lbText'); if (ta.value !== LB.text && document.activeElement !== ta) ta.value = LB.text;
+  document.querySelectorAll('.seg[data-lb]').forEach(seg => {
+    const v = String(LB[seg.dataset.lb]);
+    seg.querySelectorAll('button[data-val]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.val === v)));
+  });
+  document.querySelectorAll('[data-lbbg]').forEach(b => b.classList.toggle('on', b.dataset.lbbg.toUpperCase() === LB.bg.toUpperCase()));
+  $('lbBg').value = LB.bg.toLowerCase(); $('lbBgHex').value = LB.bg.toUpperCase();
+  $('lbFg').value = LB.fg.toLowerCase(); $('lbFgHex').value = LB.fg.toUpperCase();
+  drawLbPreview(LB);
+}
+let lbTok = 0;
+async function applyLabelEdit(commitNow) {
+  const tok = ++lbTok, lb = { ...LB };
+  drawLbPreview(lb);
+  await ensureLbFont(lb);
+  if (tok !== lbTok) return;
+  drawLbPreview(lb);
+  const st = curLabel(); if (!st) return;
+  const old = st.src, src = renderLabel(lb);
+  st.w = clamp(st.w * src.width / old.width, 0.02, 4);
+  st.src = src; st.label = lb; st.alpha = lb.shape !== 'sq';
+  delete st._ck; delete st._cv;
+  syncStickerUI(); invalidate();
+  if (commitNow) commit(); else commitSoon(500);
+}
+buildLbChoices();
+$('lbText').value = LB.text;
+$('lbText').addEventListener('input', e => { LB.text = e.target.value; applyLabelEdit(false); });
+document.querySelectorAll('.seg[data-lb]').forEach(seg => seg.addEventListener('click', e => {
+  const b = e.target.closest('button[data-val]'); if (!b) return;
+  LB[seg.dataset.lb] = b.dataset.val;
+  seg.querySelectorAll('button[data-val]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  applyLabelEdit(true);
+}));
+$('lbBgRow').addEventListener('click', e => {
+  const b = e.target.closest('[data-lbbg]'); if (!b) return;
+  LB.bg = b.dataset.lbbg; document.querySelectorAll('[data-lbbg]').forEach(x => x.classList.toggle('on', x === b));
+  $('lbBg').value = LB.bg.toLowerCase(); $('lbBgHex').value = LB.bg.toUpperCase();
+  applyLabelEdit(true);
+});
+document.querySelectorAll('[data-lbfg]').forEach(b => b.addEventListener('click', () => {
+  LB.fg = b.dataset.lbfg; $('lbFg').value = LB.fg.toLowerCase(); $('lbFgHex').value = LB.fg.toUpperCase(); applyLabelEdit(true);
+}));
+function bindLbColor(pickId, hexId, key) {
+  const set = v => { LB[key] = v.toUpperCase(); if (key === 'bg') document.querySelectorAll('[data-lbbg]').forEach(x => x.classList.toggle('on', x.dataset.lbbg.toUpperCase() === LB.bg)); applyLabelEdit(false); };
+  $(pickId).addEventListener('input', e => { $(hexId).value = e.target.value.toUpperCase(); set(e.target.value); });
+  $(pickId).addEventListener('change', () => commitSoon(50));
+  $(hexId).addEventListener('input', e => { let v = e.target.value.trim(); if (!v.startsWith('#')) v = '#' + v; if (/^#[0-9A-Fa-f]{6}$/.test(v)) { $(pickId).value = v.toLowerCase(); set(v); } });
+  $(hexId).addEventListener('change', e => { let v = e.target.value.trim(); if (!v.startsWith('#')) v = '#' + v; e.target.value = /^#[0-9A-Fa-f]{6}$/.test(v) ? v.toUpperCase() : $(pickId).value.toUpperCase(); });
+}
+bindLbColor('lbBg', 'lbBgHex', 'bg');
+bindLbColor('lbFg', 'lbFgHex', 'fg');
+$('lbAdd').addEventListener('click', async () => {
+  const lb = { ...LB };
+  if (!String(lb.text || '').trim()) { setStatus('라벨 문구를 먼저 입력해 주세요.'); $('lbText').focus(); return; }
+  await ensureLbFont(lb);
+  const src = renderLabel(lb), n = stickers.length % 6;
+  const st = { id: uid++, src, alpha: lb.shape !== 'sq', x: 0.5 + n * 0.03, y: 0.5 + n * 0.03, w: clamp(src.width * 0.045 / 96, 0.03, 0.95), rot: 0, border: 0, color: '#FFFFFF', radius: 0, shadow: false, locked: false, label: lb };
+  stickers.push(st); selId = st.id;
+  syncStickerUI(); invalidate(); commit();
+  setStatus('라벨 스티커 추가 완료.');
+});
+window.addEventListener('resize', () => drawLbPreview(LB));
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { ensureLbFont(LB).then(() => drawLbPreview(LB)); });
 
 /* ═════════════ 미리보기 조작 ═════════════ */
 function toU(ev) { const rc = cv.getBoundingClientRect(); return [(ev.clientX - rc.left) / rc.width * LAY.W, (ev.clientY - rc.top) / rc.height * LAY.H]; }
